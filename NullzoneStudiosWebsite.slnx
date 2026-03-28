@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="nullzonestudioswebsite.client/nullzonestudioswebsite.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="NullzoneStudiosWebsite.Server/NullzoneStudiosWebsite.Server.csproj" />
+</Solution>
