@@ -51,13 +51,7 @@ class NavBar extends React.Component {
         return (
             <header className={`${this.state.tinted ? "tinted" : ""}`}>
                 <div>
-                    <a href="#" id="logo" onClick={(e) => {
-                        e.preventDefault();
-                        console.log("Logo clicked, onLogoClick exists:", !!this.props.onLogoClick);
-                        if (this.props.onLogoClick) {
-                            this.props.onLogoClick();
-                        }
-                    }}><img src={this.props.logo} alt="Logo" /></a>
+                    <a href="#" id="logo"><img src={this.props.logo} alt="Logo" /></a>
                 </div>
                 <nav>
                     <ul>
