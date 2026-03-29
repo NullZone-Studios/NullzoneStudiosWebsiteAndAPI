@@ -13,7 +13,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
 {
     [ApiController]
     [Route("api/auth")]
-    public class AuthController(DataContext db, TokenService tokenService, EmailService emailService, IHttpContextAccessor httpContextAccessor, IConfiguration config) : ControllerBase
+    public class AuthController(DataContext database, TokenService tokenService, EmailService emailService, IHttpContextAccessor httpContextAccessor, IConfiguration config) : AdminControllerBase(database)
     {
         private const string AccessTokenCookie = "access_token";
         private const string RefreshTokenCookie = "refresh_token";
@@ -24,14 +24,21 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var normalized = request.UsernameOrEmail.Trim().ToLower();
-
-            var user = await db.Users.FirstOrDefaultAsync(user => user.Username == normalized || user.Email == normalized);
+            var user = await Db.Users.FirstOrDefaultAsync(user => user.Username == normalized || user.Email == normalized);
 
             if (user is null)
                 return Unauthorized(new { message = "Invalid credentials." });
             
             if (!PasswordHelper.VerifyPassword(request.Password, user.Password, user.Salt))
                 return Unauthorized(new { message = "Invalid credentials." });
+
+            var existingToken = httpContextAccessor.HttpContext?.Request.Cookies[RefreshTokenCookie];
+            if (!string.IsNullOrEmpty(existingToken))
+            {
+                var token = await Db.RefreshTokens.FirstOrDefaultAsync(t => t.Token == existingToken);
+                if (token is not null)
+                    await tokenService.RevokeTokenFamilyAsync(token.FamilyID);
+            }
 
             var roles = new[] { user.AccessLevel.ToString() };
             var accessToken = tokenService.GenerateAccessToken(user.ID.ToString(), user.Username, user.Email, roles);
@@ -56,14 +63,26 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 return Unauthorized(new { message = "Session expired. Please log in again."});
             }
 
-            var user = await db.Users.FindAsync(newRefreshToken.UserID);
+            var user = await Db.Users.FindAsync(newRefreshToken.UserID);
             if (user is null) return Unauthorized();
 
             var roles = new[] {user.AccessLevel.ToString() };
             var accessToken = tokenService.GenerateAccessToken(user.ID.ToString(), user.Username, user.Email, roles);
 
             SetTokenCookies(accessToken, newRefreshToken.Token);
-            return Ok();
+            return Ok(new { user.ID, user.Username, user.Email, user.AccessLevel });
+        }
+
+        [Authorize]
+        [HttpGet("session")]
+        public IActionResult Session()
+        {
+            var UserID = GetCurrentUserID();
+            var Username = User.FindFirstValue(JwtRegisteredClaimNames.UniqueName);
+            var Email = User.FindFirstValue(JwtRegisteredClaimNames.Email);
+            var AccessLevel = User.FindFirstValue(ClaimTypes.Role);
+
+            return Ok(new { id = UserID, Username, Email, AccessLevel });
         }
 
         [Authorize]
@@ -88,10 +107,10 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             var username = request.Username.Trim().ToLower();
             var email = request.Email.Trim().ToLower();
 
-            if (await db.Users.AnyAsync(u => u.Username == username))
+            if (await Db.Users.AnyAsync(u => u.Username == username))
                 return BadRequest(new { message = "Username already exists." });
 
-            if (await db.Users.AnyAsync(u => u.Email == email))
+            if (await Db.Users.AnyAsync(u => u.Email == email))
                 return BadRequest(new { message = "Email is already in use." });
 
             string passwordHash = PasswordHelper.HashPassword(request.Password, out string salt);
@@ -104,8 +123,16 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 AccessLevel = AccessLevel.User 
             };
 
-            db.Users.Add(user);
-            await db.SaveChangesAsync();
+            Db.Users.Add(user);
+            await Db.SaveChangesAsync();
+
+            var userData = new UserData
+            {
+                UserID = user.ID
+            };
+
+            Db.UserData.Add(userData);
+            await Db.SaveChangesAsync();
 
             var roles = new[] { user.AccessLevel.ToString() };
             var accessToken = tokenService.GenerateAccessToken(user.ID.ToString(), user.Username, user.Email, roles);
@@ -126,14 +153,14 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
             var email = request.Email.Trim().ToLower();
-            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await Db.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             if (user is null) return Ok();
 
-            var existingTokens = await db.PasswordResetTokens
+            var existingTokens = await Db.PasswordResetTokens
                 .Where(t => t.User.ID == user.ID && t.UsedAt == null)
                 .ToListAsync();
-            db.PasswordResetTokens.RemoveRange(existingTokens);
+            Db.PasswordResetTokens.RemoveRange(existingTokens);
 
             var expirationMinutes = config["Password_Reset:EXPIRATION_IN_MINUTES"]
                         ?? throw new InvalidOperationException("Password reset expiration not configured.");
@@ -146,8 +173,8 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                         int.Parse(expirationMinutes))
             };
 
-            db.PasswordResetTokens.Add(resetToken);
-            await db.SaveChangesAsync();
+            Db.PasswordResetTokens.Add(resetToken);
+            await Db.SaveChangesAsync();
 
             var resetLink = $"{config["App:BASE_URL"]}/reset-password?token={Uri.EscapeDataString(resetToken.Token)}";
             var body = emailService.LoadTemplate("PasswordReset.html", new Dictionary<string, string>
@@ -168,7 +195,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
-            var resetToken = await db.PasswordResetTokens
+            var resetToken = await Db.PasswordResetTokens
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(t => t.Token == request.Token);
 
@@ -181,7 +208,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             resetToken.UsedAt = DateTime.UtcNow;
 
             await tokenService.RevokeAllUserTokensAsync(resetToken.User.ID);
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
             return Ok(new { message = "Password reset successful." });
         }
 

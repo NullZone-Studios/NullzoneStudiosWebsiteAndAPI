@@ -1,0 +1,72 @@
+.error-container {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2em;
+    border-radius: 100%;
+}
+
+.error-container::before,
+.error-container::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    aspect-ratio: 1/1;
+    background: radial-gradient(circle, #00000090 0%, #00000000 70%, #00000000 100%);
+    transform: scale(2.5, 1.1);
+    z-index: -1;
+}
+
+.error-container::after {
+    filter: blur(5px);
+}
+
+@property --rotationZ{
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.error-container img {
+    --rotationZ: 0deg;
+
+    transform: rotateZ(var(--rotationZ));
+    animation: floaty 5s alternate infinite ease-in-out;
+    transition: all .1s ease;
+
+    image-rendering: optimizeQuality;
+    mask-image: linear-gradient(90deg, #00000000 0%, #fffffff0 20%, #ffffffff 50%, #fffffff0 80%, #00000000 100%);
+
+    border-radius: 20px;
+
+
+    width: 50%;
+}
+
+.error-container h2 {
+    color: red;
+    z-index: 1;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.error-container h2 i {
+    color: yellow;
+    font-size: 1.5em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+@keyframes floaty {
+    from {
+        --rotationZ: -5deg;
+    }
+    to {
+        --rotationZ: 5deg;
+    }
+    
+}

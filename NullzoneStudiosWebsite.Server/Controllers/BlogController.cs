@@ -16,7 +16,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPosts() {
             var currentUserID = GetCurrentUserID();
-            var posts = await db.BlogPosts
+            var posts = await Db.BlogPosts
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new
                 {
@@ -42,7 +42,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         [HttpGet("{id}/comments")]
         public async Task<IActionResult> GetComments(int id)
         {
-            var comments = await db.BlogComments
+            var comments = await Db.BlogComments
                 .Where(c => c.PostID == id)
                 .OrderBy(c => c.CreatedAt)
                 .Select(c => new
@@ -74,8 +74,8 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 AuthorID = userID,
             };
 
-            db.BlogPosts.Add(post);
-            await db.SaveChangesAsync();
+            Db.BlogPosts.Add(post);
+            await Db.SaveChangesAsync();
             return Ok(post);
         }
 
@@ -85,14 +85,14 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         {
             if (!await IsAdminAsync()) return Forbid();
 
-            var post = await db.BlogPosts.FindAsync(id);
+            var post = await Db.BlogPosts.FindAsync(id);
             if (post is null) return NotFound();
 
             if (request.Title is not null) post.Title = request.Title;
             if (request.Content is not null) post.Content = request.Content;
             if (request.PostImageUrl is not null) post.PostImageUrl = request.PostImageUrl;
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
             return Ok(post);
         }
 
@@ -103,22 +103,22 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             var userID = GetCurrentUserID();
             if (userID is null) return Unauthorized();
 
-            var post = await db.BlogPosts.FindAsync(id);
+            var post = await Db.BlogPosts.FindAsync(id);
             if (post is null) return NotFound();
 
-            var existing = await db.BlogReactions
+            var existing = await Db.BlogReactions
                 .FirstOrDefaultAsync(r => r.PostID == id && r.UserID == userID);
 
             if (existing is not null)
             {
                 if (existing.Type == request.Type)
-                    db.BlogReactions.Remove(existing);
+                    Db.BlogReactions.Remove(existing);
                 else
                     existing.Type = request.Type;
             }
             else
             {
-                db.BlogReactions.Add(new DataModels.BlogReaction
+                Db.BlogReactions.Add(new DataModels.BlogReaction
                 {
                     PostID = id,
                     UserID = userID.Value,
@@ -126,10 +126,10 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 });
             }
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
-            var likes = await db.BlogReactions.CountAsync(r => r.PostID == id && r.Type == DataModels.ReactionType.Like);
-            var dislikes = await db.BlogReactions.CountAsync(r => r.PostID == id && r.Type == DataModels.ReactionType.Dislike);
+            var likes = await Db.BlogReactions.CountAsync(r => r.PostID == id && r.Type == DataModels.ReactionType.Like);
+            var dislikes = await Db.BlogReactions.CountAsync(r => r.PostID == id && r.Type == DataModels.ReactionType.Dislike);
 
             return Ok(new { likes, dislikes });
         }
@@ -141,7 +141,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             var userID = GetCurrentUserID();
             if (userID is null) return Unauthorized();
 
-            var post = await db.BlogPosts.FindAsync(id);
+            var post = await Db.BlogPosts.FindAsync(id);
             if (post is null) return NotFound();
 
             var comment = new BlogComment
@@ -151,10 +151,10 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 Content = request.Content.Trim()
             };
 
-            db.BlogComments.Add(comment);
-            await db.SaveChangesAsync();
+            Db.BlogComments.Add(comment);
+            await Db.SaveChangesAsync();
 
-            var user = await db.Users.FindAsync(userID);
+            var user = await Db.Users.FindAsync(userID);
 
             return Ok(new
             {
@@ -174,24 +174,18 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             var userID = GetCurrentUserID();
             if (userID is null) return Unauthorized();
 
-            var user = await db.Users.FindAsync(userID);
+            var user = await Db.Users.FindAsync(userID);
             if (user is null) return Unauthorized();
 
-            var post = await db.BlogPosts.FindAsync(id);
+            var post = await Db.BlogPosts.FindAsync(id);
             if (post is null) return NotFound();
 
             if (user.AccessLevel != AccessLevel.Admin && post.AuthorID != userID)
                 return Forbid();
 
-            db.BlogPosts.Remove(post);
-            await db.SaveChangesAsync();
+            Db.BlogPosts.Remove(post);
+            await Db.SaveChangesAsync();
             return NoContent();
-        }
-
-        private int? GetCurrentUserID()
-        {
-            var claim = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            return int.TryParse(claim, out var id) ? id : null;
         }
     }
 }

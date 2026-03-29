@@ -13,7 +13,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProjects()
         {
-            var projects = await db.Projects
+            var projects = await Db.Projects
                 .OrderBy(p => p.CreatedAt)
                 .Select(p => new
                 {
@@ -31,7 +31,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         [HttpGet("latest")]
         public async Task<IActionResult> GetLatest()
         {
-            var latest = await db.Projects
+            var latest = await Db.Projects
                 .OrderBy(p => p.CreatedAt)
                 .Take(10)
                 .Select(p => new
@@ -60,8 +60,8 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 BannerImageUrl = request.BannerImageUrl
             };
 
-            db.Projects.Add(project);
-            await db.SaveChangesAsync();
+            Db.Projects.Add(project);
+            await Db.SaveChangesAsync();
             return Ok(project);
         }
 
@@ -71,7 +71,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         {
             if (!await IsAdminAsync()) return Forbid();
 
-            var project = await db.Projects.FindAsync(id);
+            var project = await Db.Projects.FindAsync(id);
             if (project is null) return NotFound();
 
             if (request.Title is not null) project.Title = request.Title;
@@ -79,7 +79,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             if (request.Href is not null) project.Href = request.Href;
             if (request.BannerImageUrl is not null) project.BannerImageUrl = request.BannerImageUrl;
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
             return Ok(project);
         }
 
@@ -88,11 +88,11 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         public async Task<IActionResult> DeleteProject(int id) {
             if (!await IsAdminAsync()) return Forbid();
 
-            var project = await db.Projects.FindAsync(id);
+            var project = await Db.Projects.FindAsync(id);
             if (project is null) return NotFound();
 
-            db.Projects.Remove(project);
-            await db.SaveChangesAsync();
+            Db.Projects.Remove(project);
+            await Db.SaveChangesAsync();
             return NoContent();
         }
     }

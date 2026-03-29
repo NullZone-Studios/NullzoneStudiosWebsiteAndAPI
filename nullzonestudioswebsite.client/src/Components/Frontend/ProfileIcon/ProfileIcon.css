@@ -1,0 +1,26 @@
+.profile-icon {
+    width: 3rem;
+    height: 3rem;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ffffff55;
+    background: linear-gradient(180deg, #1c1c1c 0%, #090909 100%);
+    box-shadow: 0 0 16px #00000050, 0 0 12px #ffffff1a;
+    display: block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-icon:hover {
+    transform: translateY(-1px);
+    border-color: #a07bd0aa;
+    box-shadow: 0 0 18px #00000055, 0 0 16px #a07bd055, 0 0 24px #8d63b840;
+}
+
+.profile-icon-button {
+    cursor: pointer;
+}
+
+.profile-icon-button:focus-visible {
+    outline: 2px solid #a07bd0;
+    outline-offset: 3px;
+}

@@ -1,0 +1,108 @@
+header {
+    position: fixed;
+    top: 0;
+    padding: .5em;
+    height: 3em;
+    width: calc(100% - 1em);
+    display: flex;
+    justify-content: space-between;
+    z-index: 1000;
+    transition: all .2s ease-out;
+}
+
+header.tinted {
+    background-color: #0000008d;
+    backdrop-filter: blur(5px);
+    height: 2em;
+}
+
+header > div:first-child {
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+header #logo {
+    cursor: pointer;
+    display: block;
+    height: 100%;
+}
+
+header #logo img {
+    height: 100%;
+    transition: all .2s ease-in-out;
+}
+
+header #logo:hover img {
+    transform: scale(1.2,1.2);
+}
+
+header nav {
+    align-content: center;
+}
+
+header nav ul{
+    display: flex;
+    gap: 1em;
+    text-transform: capitalize;
+    height: 100%;
+}
+
+nav a {
+    position: relative;
+    text-decoration: none;
+    color: var(--text-color);
+    background: transparent;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    transition: all .2s ease-out;
+    height: 100%;
+    padding: 0 1em;
+}
+
+nav a li {
+    height: 100%;
+    align-content: center;
+}
+
+nav a li::after {
+    position: absolute;
+    content: "";
+    background-color: var(--text-color);
+    width: 0%;
+    height: 2px;
+    left: 0;
+    bottom: 0;
+
+    transition: all .2s ease-out;
+}
+
+nav a:hover {
+    text-shadow: #ff12d0 0px 0px 5px;
+    font-size: 1rem;
+}
+
+nav .active {
+    font-size: 1rem;
+}
+
+nav a:hover li::after {
+    width: 100%;
+}
+
+nav a.disable-hover:hover li::after {
+    width: 0%;
+}
+
+nav a li .profile-icon{
+    height: calc(100% - 4px);
+    width: auto;
+    max-width: 3rem;
+    aspect-ratio: 1/1;
+    padding: 0px;
+}
+
+nav .active li::after {
+    width: 100%;
+}

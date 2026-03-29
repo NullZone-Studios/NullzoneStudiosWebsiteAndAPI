@@ -22,7 +22,6 @@ namespace NullzoneStudiosWebsite.Server
 
             var builder = WebApplication.CreateBuilder(args);
 
-
             // JWT Authentication
             byte[] jwtKey = SHA256.HashData(Encoding.UTF8.GetBytes(
                 builder.Configuration["Jwt:KEY"]
@@ -52,6 +51,11 @@ namespace NullzoneStudiosWebsite.Server
                     {
                         ctx.Token = ctx.Request.Cookies["access_token"];
                         return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = ctx =>
+                    {
+                        Console.WriteLine($"Auth failed: {ctx.Exception.Message}");
+                        return Task.CompletedTask;
                     }
                 };
             });
@@ -69,6 +73,7 @@ namespace NullzoneStudiosWebsite.Server
 
             builder.Services.AddScoped<TokenService>();
             builder.Services.AddScoped<EmailService>();
+            builder.Services.AddHostedService<TokenCleanupService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

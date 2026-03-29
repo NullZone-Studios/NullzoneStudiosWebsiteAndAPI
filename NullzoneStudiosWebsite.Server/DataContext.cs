@@ -8,8 +8,8 @@ namespace NullzoneStudiosWebsite.Server
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
         public DbSet<User> Users => Set<User>();
-        public DbSet<UserData> UsersData => Set<UserData>();
-        public DbSet<UserEmployeeData> UsersEmployeeData => Set<UserEmployeeData>();
+        public DbSet<UserData> UserData => Set<UserData>();
+        public DbSet<UserEmployeeData> UserEmployeeData => Set<UserEmployeeData>();
         public DbSet<Project> Projects => Set<Project>();
         public DbSet<BlogPost> BlogPosts => Set<BlogPost>();
         public DbSet<BlogComment> BlogComments => Set<BlogComment>();

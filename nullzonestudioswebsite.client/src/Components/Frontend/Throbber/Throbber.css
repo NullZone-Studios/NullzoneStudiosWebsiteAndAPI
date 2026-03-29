@@ -1,0 +1,71 @@
+.throbber-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000d0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --scale {
+    syntax: "<number>";
+    initial-value: 1;
+    inherits: false;
+}
+
+.throbber {
+    position: relative;
+    background: transparent;
+    height: 10%;
+    aspect-ratio: 1/1;
+}
+
+.throbber::after{
+    --angle: 0deg;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 120%;
+    height: 120%;
+    content: "";
+    border-radius: 100%;
+    border-top: dotted white 5px;
+    animation: throb 1s infinite ease;
+    transform: translate(-50%, -50%) rotateZ(var(--angle));
+}
+
+.throbber img {
+    --scale: 1;
+    --angle: 0deg;
+    width: 100%;
+    transform: scale(var(--scale)) rotateZ(var(--angle));
+    animation: thump 1s infinite ease-out;
+}
+
+@keyframes throb {
+    from {
+        --angle: 0deg;
+    }
+    to {
+        --angle: 360deg;
+    }
+}
+
+@keyframes thump {
+    from {
+        --scale: 1;
+    }
+    to {
+        --scale: 1.05;
+    }
+}

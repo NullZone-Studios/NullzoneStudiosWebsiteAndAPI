@@ -10,12 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="EmailTemplates\PasswordReset.html" />
-  </ItemGroup>
-
-  <ItemGroup>
 	  <Content Include="EmailTemplates\**">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	  </Content>
   </ItemGroup>
 

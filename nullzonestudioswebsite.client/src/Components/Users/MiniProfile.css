@@ -1,0 +1,87 @@
+.mini-profile {
+  background: #320318;
+  border: 1px solid #b5a5dcda;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgb(221, 19, 19);
+  width: 320px;
+  max-width: 90vw;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.mini-profile-header {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #4d4d4d;
+}
+
+.mini-profile-avatar {
+  width: 50px;
+  height: 50px;
+  border: #7777775d solid 1px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.mini-profile-info h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #cacaca;
+}
+
+.mini-profile-info p {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #939393;
+}
+
+.mini-profile-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #818181;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.mini-profile-close:hover {
+  background-color: rgb(230, 230, 230);
+  color: #434343;
+}
+
+.mini-profile-about {
+  padding: 12px;
+}
+
+.mini-profile-about p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #b5b5b5;
+}
+
+.mini-profile-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #c6c6c6;
+  border-top: 3px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 12px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -13,7 +13,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEmployees()
         {
-            var employes = await db.Users
+            var employes = await Db.Users
                 .Where(u => u.UserWorkerData != null)
                 .Select(u => new
                 {
@@ -30,11 +30,11 @@ namespace NullzoneStudiosWebsite.Server.Controllers
 
         [Authorize]
         [HttpPost("{userID}/employee")]
-        public async Task<IActionResult> AddWorkerData(int userID, [FromBody] EmployeeDataRequest request)
+        public async Task<IActionResult> AddEmployeeData(int userID, [FromBody] EmployeeDataRequest request)
         {
             if (!await IsAdminAsync()) return Forbid();
 
-            var user = await db.Users.FindAsync(userID);
+            var user = await Db.Users.FindAsync(userID);
             if (user is null) return NotFound();
 
             if (user.UserWorkerData is not null)
@@ -47,8 +47,8 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 About = request.About ?? string.Empty,
             };
 
-            db.UsersEmployeeData.Add(employeeData);
-            await db.SaveChangesAsync();
+            Db.UserEmployeeData.Add(employeeData);
+            await Db.SaveChangesAsync();
             return Ok(employeeData);
         }
 
@@ -58,13 +58,13 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         {
             if (!await IsAdminAsync()) return Forbid();
             
-            var employeeData = await db.UsersEmployeeData.FindAsync(userID);
+            var employeeData = await Db.UserEmployeeData.FindAsync(userID);
             if (employeeData is null) return NotFound();
 
             if (request.JobTitle is not null) employeeData.JobTitle = request.JobTitle;
             if (request.About is not null) employeeData.About = request.About;
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
             return Ok(employeeData);
         }
 
@@ -73,11 +73,11 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         public async Task<IActionResult> RemoveEmployeeData(int userID) {
             if (!await IsAdminAsync()) return Forbid();
 
-            var workerData = await db.UsersEmployeeData.FindAsync(userID);
+            var workerData = await Db.UserEmployeeData.FindAsync(userID);
             if (workerData is null) return NotFound();
             
-            db.UsersEmployeeData.Remove(workerData);
-            await db.SaveChangesAsync();
+            Db.UserEmployeeData.Remove(workerData);
+            await Db.SaveChangesAsync();
             return NoContent();
         }
     }

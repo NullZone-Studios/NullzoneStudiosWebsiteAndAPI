@@ -1,0 +1,131 @@
+.profile-card {
+    position: relative;
+    width: 18%;
+    aspect-ratio: 1/1.3;
+    margin: 1em 4em;
+    transform-style: preserve-3d;
+    transition: transform .3s ease-out, box-shadow .3s ease-out;
+    cursor: pointer;
+}
+
+.profile-card .front, 
+.profile-card .back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.profile-card .front {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 70%, #0f0f0f 95%, #000000 100%);
+    transform: rotateY(0deg);
+    z-index: 2;
+}
+
+.profile-card .back {
+    background: linear-gradient(180deg, #000000 0%, #00000080 100%);
+    transform: rotateY(180deg);
+}
+
+.profile-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: multiply;
+}
+
+.profile-card .front h3 {
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    text-transform: capitalize;
+}
+
+.profile-card .front h3 small {
+    font-size: .6em;
+    text-transform: capitalize;
+}
+
+.profile-card .back h3 {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding: 1em;
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.profile-card .back p {
+    position: absolute;
+    bottom: 0;
+    padding: 1em;
+}
+
+.profile-card .back h3 small {
+    font-size: .6em;
+}
+
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.profile-card::before,
+.profile-card::after {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    content: "";
+    width: 99%;
+    height: 99%;
+    transform: translate(-50%, -50%);
+    background-image: conic-gradient(from var(--angle), #ff000000 50%, #ff0000ff);
+    border-radius: 3%;
+    transition: all .2s ease-out;
+    z-index: -1;
+}
+
+.profile-card::before {
+    filter: blur(0px);
+    opacity: .8;
+}
+
+.profile-card:hover::before{
+    filter: blur(10px);
+}
+
+.profile-card:hover::after,
+.profile-card:hover::before {
+    width: 101%;
+    height: 101%;
+    position: absolute;
+    animation: 3s rotationBackground linear infinite;
+}
+
+.profile-card.flipped:hover::after,
+.profile-card.flipped:hover::before {
+    background-image: conic-gradient(from var(--angle), #ff0000, #ff000000 50%);
+    animation: 3s rotationBackground linear reverse infinite;
+}
+
+@keyframes rotationBackground {
+    from {
+        --angle: 0deg;
+    }
+    to {
+        --angle: 360deg
+    }
+}
