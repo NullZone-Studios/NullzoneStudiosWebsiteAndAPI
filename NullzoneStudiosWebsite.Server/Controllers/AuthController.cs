@@ -89,9 +89,9 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            var userID = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            if (userID is not null)
-                await tokenService.RevokeAllUserTokensAsync(int.Parse(userID));
+            var userID = GetCurrentUserID();
+            if (userID.HasValue)
+                await tokenService.RevokeAllUserTokensAsync(userID.Value);
 
             ClearTokenCookies();
             return NoContent();

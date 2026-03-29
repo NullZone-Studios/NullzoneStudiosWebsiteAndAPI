@@ -10,7 +10,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
 
         protected async Task<bool> IsAdminAsync()
         {
-            var claim = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var claim = User.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(claim, out var userID)) return false;
 
             var user = await Db.Users.FindAsync(userID);
@@ -19,7 +19,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
 
         protected int? GetCurrentUserID()
         {
-            var claim = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var claim = User.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.TryParse(claim, out var id) ? id : null;
         }
     }

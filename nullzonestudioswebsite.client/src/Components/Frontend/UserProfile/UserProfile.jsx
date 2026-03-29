@@ -1,36 +1,22 @@
 import React, { useState, useEffect } from "react";
 import useAuth from "../../../hooks/useAuth";
+import RobbyProfile from "../../../assets/images/RobbyProfile.svg"
 import './UserProfile.css'
 
-function UserProfile({ isOpen, onClose, profilePicture, name, lastName, displayName, email, birthday, gender, about, onSave }) {
+function UserProfile({ isOpen, onClose, profilePicture, name, lastName, displayName, email, birthdate, gender, about, onSave }) {
     const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState({ name, lastName, displayName, email, birthday, gender, about });
-    const [userData, setUserData] = useState(null);
-    const { getProfile, updateProfile } = useAuth();
+    const [formData, setFormData] = useState({ name, lastName, displayName, email, birthdate, gender, about, profilePicture });
+    const { updateProfile } = useAuth();
     const [saveError, setSaveError] = useState(null);
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
             setTimeout(() => setIsEditing(false), 0);
-
-            getProfile().then(data => {
-                setUserData(data);
-                setFormData({
-                    name: data.firstName,
-                    lastName: data.lastName,
-                    displayName: data.displayName,
-                    email: data.email,
-                    birthday: data.birthdate ?? '',
-                    gender: data.gender ?? '',
-                    about: data.about ?? ''
-                })
-            }).catch(err => {
-                console.error("Failed to fetch user profile:", err);
-                setFormData({ name, lastName, displayName, email, birthday, gender, about });
-            })
         }
-    }, [isOpen, about, birthday, displayName, email, gender, getProfile, lastName, name]);
+        setFormData({ name, lastName, displayName, email, birthdate, gender, about, profilePicture });
+
+    }, [isOpen, about, birthdate, displayName, email, gender, lastName, name, profilePicture]);
 
     const updateField = (field) => (e) => setFormData(prev => ({ ...prev, [field]: e.target.value }));
 
@@ -43,7 +29,10 @@ function UserProfile({ isOpen, onClose, profilePicture, name, lastName, displayN
                 lastName: formData.lastName,
                 displayName: formData.displayName,
                 email: formData.email,
-                birthdate: formData.birthday
+                birthdate: formData.birthdate,
+                gender: formData.gender,
+                about: formData.about,
+                profileImage: formData.profilePicture
             });
             if (onSave) onSave({ ...formData, profilePicture });
             setIsEditing(false);
@@ -56,7 +45,7 @@ function UserProfile({ isOpen, onClose, profilePicture, name, lastName, displayN
     };
 
     const cancelEdit = () => {
-        setFormData({ name, lastName, displayName, email, birthday, gender, about });
+        setFormData({ name, lastName, displayName, email, birthdate, gender, about });
         setIsEditing(false);
     };
 
@@ -78,7 +67,7 @@ function UserProfile({ isOpen, onClose, profilePicture, name, lastName, displayN
 
                     <div className="user-profile">
                         <div className="profile-header">
-                            <img src={userData?.profileImage ?? profilePicture} alt={`${name} ${lastName}`} className="profile-picture" />
+                            <img src={formData.profileImage ?? RobbyProfile} alt="" className="profile-picture" />
                             <h1>{formData.displayName || `${formData.name} ${formData.lastName}`}</h1>
                         </div>
                         <div className="profile-details">
@@ -100,7 +89,7 @@ function UserProfile({ isOpen, onClose, profilePicture, name, lastName, displayN
                             </div>
                             <div className="profile-field">
                                 <strong>Birthday:</strong>
-                                {isEditing ? <input value={formData.birthday} onChange={updateField('birthday')} /> : <span>{formData.birthday}</span>}
+                                {isEditing ? <input type="date" value={formData.birthdate} onChange={updateField('birthdate')} /> : <span>{formData.birthdate}</span>}
                             </div>
                             <div className="profile-field">
                                 <strong>Gender:</strong>

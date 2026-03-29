@@ -24,7 +24,7 @@ const MiniProfile = ({ username, position, isVisible, onClose }) => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-        const response = await fetch(`/api/user/${username}`, {
+        const response = await fetch(`/api/user/info/${username}`, {
           signal: controller.signal,
         });
 

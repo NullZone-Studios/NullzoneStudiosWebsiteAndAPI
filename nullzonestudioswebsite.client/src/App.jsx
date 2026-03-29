@@ -33,6 +33,7 @@ import useProjects from './hooks/useProjects'
 import useBlog from './hooks/useBlog'
 import RobbyProfile from './assets/images/RobbyProfile.svg'
 import ResetPasswordForm from './Components/Frontend/ResetPasswordForm/ResetPasswordForm'
+import useAuth from './hooks/useAuth'
 
 function App() {
   const [showLoginPanel, setShowLoginPanel] = useState(false);
@@ -42,18 +43,20 @@ function App() {
   const [resetToken, setResetToken] = useState(null);
 
   const [userProfile, setUserProfile] = useState({
-    profilePicture: RobbyProfile,
+    profilePicture: null,
     name: "N/A",
     lastName: "N/A",
     displayName: "N/A",
     email: "N/A",
-    birthday: "N/A",
+    birthdate: "N/A",
     gender: "N/A",
     about: "N/A"
   });
+
   const employees = useEmployees();
   const projects = useProjects();
   const blog = useBlog();
+  const { user, getProfile, logout } = useAuth();
 
   const handleLoginClick = () => {
     setShowLoginPanel(!showLoginPanel);
@@ -76,7 +79,6 @@ function App() {
 
   const handleUserProfileSave = (updatedProfile) => {
     setUserProfile(updatedProfile);
-    setShowUserProfilePanel(false);
   };
 
   useEffect(() => {
@@ -86,16 +88,43 @@ function App() {
       setTimeout(() => setResetToken(token), 0);
       window.history.replaceState({}, '', '/'); // Clear the token from the URL
     }
-  }, [resetToken]);
+
+    getProfile().then(data => {
+        setUserProfile({
+            name: data.firstName,
+            lastName: data.lastName,
+            displayName: data.displayName,
+            email: data.email,
+            birthdate: data.birthdate ?? '',
+            gender: data.gender ?? '',
+            about: data.about ?? '',
+            profilePicture: data.profileImage
+        })
+    }).catch(err => {
+        console.error("Failed to fetch user profile:", err);
+        setUserProfile({
+            name: "N/A",
+            lastName: "N/A",
+            displayName: "N/A",
+            email: "N/A",
+            birthdate: "N/A",
+            gender: "N/A",
+            about: "N/A",
+            profilePicture: null
+        });
+    })
+
+  }, [resetToken, getProfile, user]);
 
   return (
     <>
-      <NavBar logo={Logo} onLogoClick={handleUserProfileClick}>
+      <NavBar logo={Logo}>
         <NavItem href="#about-us" icon="info-circle-fill">About us</NavItem>
         <NavItem href="#projects" icon="folder-fill">Projects</NavItem>
         <NavItem href="#blog" icon="stack">Blog</NavItem>
         <NavItem href="#contact-us" icon="telephone-fill">Contact us</NavItem>
-        <NavItem onClick={handleLoginClick} disableHoverEffect><ProfileIcon isInteractive={false} src={ProfileStandinImg} fallbackSrc={RobbyProfile}></ProfileIcon></NavItem>
+        {!user ? <NavItem onClick={handleLoginClick} icon="lock-fill">Log in</NavItem> : <NavItem icon="unlock2-fill" onClick={logout}>Log out</NavItem>}
+        <NavItem onClick={user ? handleUserProfileClick : handleLoginClick} disableHoverEffect><ProfileIcon isInteractive={false} src={userProfile.profilePicture} fallbackSrc={user ? RobbyProfile : ProfileStandinImg}></ProfileIcon></NavItem>
       </NavBar>
       <section id="front">
         <div className="content">
@@ -177,7 +206,7 @@ Alongside our roguelite prototypes, we also explore incremental and idle game me
         lastName={userProfile.lastName}
         displayName={userProfile.displayName}
         email={userProfile.email}
-        birthday={userProfile.birthday}
+        birthdate={userProfile.birthdate}
         gender={userProfile.gender}
         about={userProfile.about}
         onSave={handleUserProfileSave}

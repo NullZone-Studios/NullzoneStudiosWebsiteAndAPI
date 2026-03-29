@@ -10,7 +10,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
     [Route("api/user")]
     public class UserController(DataContext database) : AdminControllerBase(database)
     {
-        [HttpGet("{username}")]
+        [HttpGet("info/{username}")]
         public async Task<IActionResult> GetUserInfo(string username)
         {
             var user = await Db.Users
@@ -51,7 +51,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                     About = u.UserData.About,
                     ProfileImage = u.UserData.ProfileImage,
                     Gender = u.UserData.Gender,
-                    BirthDate = u.UserData.Birthdate,
+                    Birthdate = u.UserData.Birthdate,
                     JobTitle = u.UserWorkerData != null ? u.UserWorkerData.JobTitle : null,
                 }).FirstOrDefaultAsync();
             if (user is null) return NotFound();
