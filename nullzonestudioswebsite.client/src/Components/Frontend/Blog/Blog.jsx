@@ -3,6 +3,7 @@ import "./Blog.css";
 import ProfileIcon from "../ProfileIcon/ProfileIcon";
 import BlogShowcase from "./BlogShowcase";
 import Icon from "../Icon/Icon";
+import ProtectedRoute from "../../ProtectedRoute/ProtectedRoute";
 
 class Blog extends React.Component {
     constructor(props) {
