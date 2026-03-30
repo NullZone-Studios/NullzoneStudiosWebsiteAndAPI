@@ -1,4 +1,5 @@
 import React from "react";
+import { Navigate } from "react-router-dom";
 import "./Blog.css";
 import ProfileIcon from "../ProfileIcon/ProfileIcon";
 import BlogShowcase from "./BlogShowcase";
@@ -17,6 +18,7 @@ class Blog extends React.Component {
             isDraggingBlog: false,
             isLoadingComments: false,
             selectedPostId: null,
+            redirectToAdminEditPostId: null,
             draftComment: "",
             posts: this.NormalizePosts(props.posts)
         }
@@ -220,7 +222,7 @@ class Blog extends React.Component {
     }
 
     HandleEditPost = (postId) => {
-        console.log(`Edit post ${postId}`);
+        this.setState({ redirectToAdminEditPostId: postId });
     }
 
     HandleDeletePost = (postId) => {
@@ -501,6 +503,16 @@ class Blog extends React.Component {
 
     render() {
         const selectedPost = this.state.posts.find(post => post.id === this.state.selectedPostId) || null;
+        const editPostTarget = this.state.redirectToAdminEditPostId;
+
+        if (editPostTarget !== null) {
+            return (
+                <Navigate
+                    to={`/admin?editPost=${encodeURIComponent(editPostTarget)}#admin-blog`}
+                    replace={false}
+                />
+            );
+        }
 
         return (
             <>

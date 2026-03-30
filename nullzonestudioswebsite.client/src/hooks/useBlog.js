@@ -38,16 +38,36 @@ const useBlog = () => {
     }, []);
 
     const react = useCallback(async (postID, type) => {
-        const response = await client.post(`/api/blog/${postID}/react`, { Type: type });
+        const reactionType = type === "like"
+            ? 1
+            : type === "dislike"
+                ? -1
+                : null;
+
+        if (reactionType === null) {
+            throw new Error(`Unsupported reaction type: ${type}`);
+        }
+
+        const response = await client.post(`/api/blog/${postID}/react`, { Type: reactionType });
         if (!response.ok) throw new Error('Failed to react to post.');
         const data = await response.json();
 
-        setPosts(prev => prev.map(post =>
+        setPosts(prev => prev.map(post => {
+            if (post.id !== postID) {
+                return post;
+            }
 
-            post.id === postID
-                ? { ...post, likes: data.likes, dislikes: data.dislikes }
-                : post
-        ));
+            const liked = type === "like" ? !post.liked : false;
+            const disliked = type === "dislike" ? !post.disliked : false;
+
+            return {
+                ...post,
+                liked,
+                disliked,
+                likes: data.likes,
+                dislikes: data.dislikes
+            };
+        }));
     }, []);
 
     const comment = useCallback(async (postID, content) => {

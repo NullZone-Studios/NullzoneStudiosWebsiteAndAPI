@@ -1,5 +1,5 @@
 import './AdminPanel.css';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import AdminAboutUs from '../../Components/Backend/AdminAboutUs';
 import AdminProjects from '../../Components/Backend/AdminProjects';
 import AdminBlog from '../../Components/Backend/AdminBlog';
@@ -16,9 +16,11 @@ const navItems = [
 ];
 
 function AdminPanel() {
+    const location = useLocation();
     const employees = useEmployees();
     const projects = useProjects();
     const blog = useBlog();
+    const editPostId = new URLSearchParams(location.search).get('editPost');
 
     return (
         <div className="admin-panel">
@@ -47,7 +49,11 @@ function AdminPanel() {
             <main className="admin-main">
                 <AdminAboutUs data={employees.employees} />
                 <AdminProjects data={projects.projects} />
-                <AdminBlog data={blog.posts} callback={{ updatePost: blog.updatePost, createPost: blog.createPost }} />
+                <AdminBlog
+                    data={blog.posts}
+                    editPostId={editPostId}
+                    callback={{ updatePost: blog.updatePost, createPost: blog.createPost, deletePost: blog.deletePost }}
+                />
                 <AdminMessages />
             </main>
         </div>
