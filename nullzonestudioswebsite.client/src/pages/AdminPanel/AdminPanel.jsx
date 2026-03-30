@@ -47,7 +47,7 @@ function AdminPanel() {
             <main className="admin-main">
                 <AdminAboutUs data={employees.employees} />
                 <AdminProjects data={projects.projects} />
-                <AdminBlog data={blog.posts} />
+                <AdminBlog data={blog.posts} callback={{ updatePost: blog.updatePost, createPost: blog.createPost }} />
                 <AdminMessages />
             </main>
         </div>

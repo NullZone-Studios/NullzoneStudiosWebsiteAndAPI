@@ -69,7 +69,22 @@ const useBlog = () => {
         return await response.json();
     }, []);
 
-    return { posts, loading, error, react, comment, deletePost, getComments };
+    const updatePost = useCallback(async (updatedPost) => {
+        const response = await client.put(`/api/blog/${updatedPost.id}`, updatedPost);
+        if (!response.ok) throw new Error('Failed to update post.');
+        const data = await response.json();
+        setPosts(prev => prev.map(post => post.id === updatedPost.id ? data : post));
+    }, []);
+
+    const createPost = useCallback(async (newPost) => {
+        const response = await client.post(`/api/blog`, newPost);
+        if (!response.ok) throw new Error('Failed to create post.');
+        const data = await response.json();
+        setPosts(prev => [...prev, data]);
+        return data;
+    }   , []);
+
+    return { posts, loading, error, react, comment, deletePost, getComments, updatePost, createPost };
 };
 
 export default useBlog;

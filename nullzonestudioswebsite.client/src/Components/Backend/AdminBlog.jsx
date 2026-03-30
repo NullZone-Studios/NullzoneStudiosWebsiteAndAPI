@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const initialPosts = [
     { id: 1, title: 'First Post',  content: 'This is the first post.',  author: 'Author A', postImage: '', createdAt: '2026-03-25T13:34:00' },
@@ -8,7 +8,7 @@ const initialPosts = [
     { id: 5, title: 'Fifth Post',  content: 'This is the fifth post.',  author: 'Author E', postImage: '', createdAt: '2026-03-10T08:15:00' },
 ];
 
-const empty = { title: '', content: '', postImage: '' };
+const empty = { Title: '', Content: '', PostImageUrl: '' };
 
 // TODO: replace with real auth context once authentication is wired up
 const currentUser = 'Admin';
@@ -18,24 +18,83 @@ const fmt = str => {
     return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
 };
 
-function AdminBlog(data) {
-    const [posts,     setPosts]     = useState(initialPosts);
+function AdminBlog({ data, callback = {} }) {
+    const [posts,     setPosts]     = useState(Array.isArray(data) ? data : initialPosts);
     const [editingId, setEditingId] = useState(null);
     const [showForm,  setShowForm]  = useState(false);
     const [form,      setForm]      = useState(empty);
 
+    useEffect(() => {
+        if (Array.isArray(data)) {
+            setPosts(data);
+        }
+    }, [data]);
+
     const onChange  = e => setForm({ ...form, [e.target.name]: e.target.value });
     const openAdd   = () => { setEditingId(null); setForm(empty); setShowForm(true); };
-    const openEdit  = p => { setEditingId(p.id); setForm({ title: p.title, content: p.content, postImage: p.postImage }); setShowForm(true); };
+    const openEdit  = p => {
+        setEditingId(p.id);
+        setForm({
+            Title: p.title ?? '',
+            Content: p.content ?? '',
+            PostImageUrl: p.postImage ?? '',
+        });
+        setShowForm(true);
+    };
     const cancel    = () => { setEditingId(null); setShowForm(false); setForm(empty); };
-    const deleteRow = id => setPosts(posts.filter(p => p.id !== id));
+    const deleteRow = async id => {
+        if (callback.deletePost) {
+            await callback.deletePost(id);
+            return;
+        }
 
-    const save = () => {
-        if (!form.title.trim()) return;
+        setPosts(posts.filter(p => p.id !== id));
+    };
+
+
+    const save = async () => {
+        if (!form.Title.trim()) return;
         if (editingId) {
-            setPosts(posts.map(p => p.id === editingId ? { ...p, ...form } : p));
+            if (callback.updatePost) {
+                const updatedPost = await callback.updatePost({ ...form, Id: editingId });
+                setPosts(posts.map(p => p.id === editingId ? {
+                    ...p,
+                    title: form.Title,
+                    content: form.Content,
+                    postImage: form.PostImageUrl,
+                    ...(updatedPost ?? {}),
+                } : p));
+            } else {
+                setPosts(posts.map(p => p.id === editingId ? {
+                    ...p,
+                    title: form.Title,
+                    content: form.Content,
+                    postImage: form.PostImageUrl,
+                } : p));
+            }
         } else {
-            setPosts([...posts, { id: Date.now(), ...form, author: currentUser, createdAt: new Date().toISOString() }]);
+            if (callback.createPost) {
+                const createdPost = await callback.createPost({
+                    ...form,
+                    Author: currentUser,
+                    CreatedAt: new Date().toISOString(),
+                });
+                if (createdPost) {
+                    setPosts(prevPosts => [...prevPosts, createdPost]);
+                }
+            } else {
+                setPosts(prevPosts => [
+                    ...prevPosts,
+                    {
+                        id: Date.now(),
+                        title: form.Title,
+                        content: form.Content,
+                        postImage: form.PostImageUrl,
+                        author: currentUser,
+                        createdAt: new Date().toISOString(),
+                    },
+                ]);
+            }
         }
         cancel();
     };
@@ -81,20 +140,20 @@ function AdminBlog(data) {
                         <div className="admin-form-row">
                             <div className="admin-form-group">
                                 <label>Title</label>
-                                <input type="text" name="title" value={form.title} onChange={onChange} placeholder="Post title" />
+                                <input type="text" name="Title" value={form.Title} onChange={onChange} placeholder="Post title" />
                             </div>
                             <div className="admin-form-group">
                                 <label>Author</label>
-                                <input type="text" value={currentUser} disabled style={{ opacity: 0.5, cursor: 'not-allowed' }} />
+                                <input type="text" value={currentUser}  disabled style={{ opacity: 0.5, cursor: 'not-allowed' }} />
                             </div>
                         </div>
                         <div className="admin-form-group">
                             <label>Post Image URL (optional)</label>
-                            <input type="url" name="postImage" value={form.postImage} onChange={onChange} placeholder="https://…" />
+                            <input type="url" name="PostImageUrl" value={form.PostImageUrl} onChange={onChange} placeholder="https://…" />
                         </div>
                         <div className="admin-form-group">
                             <label>Content</label>
-                            <textarea name="content" rows={7} value={form.content} onChange={onChange} placeholder="Write your post…" />
+                            <textarea name="Content" rows={7} value={form.Content} onChange={onChange} placeholder="Write your post…" />
                         </div>
                         <div className="admin-form-actions">
                             <button className="admin-btn admin-btn-ghost" onClick={cancel}>Cancel</button>
