@@ -118,7 +118,7 @@ function AdminAboutUs({ data = [] }) {
                         <div className="admin-form-row">
                             <div className="admin-form-group">
                                 <label>Name</label>
-                                <input type="text" name="name" value={form.name} onChange={onChange} placeholder="Member name" />
+                                <input type="text" name="name" value={form.name} onChange={onChange} placeholder="Member name" disabled style={{ opacity: 0.5, cursor: 'not-allowed' }} />
                             </div>
                             <div className="admin-form-group">
                                 <label>Job Title</label>
