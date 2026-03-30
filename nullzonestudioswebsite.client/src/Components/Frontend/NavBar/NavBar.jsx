@@ -31,6 +31,7 @@ class NavBar extends React.Component {
         if (frontSection) this.observer.observe(frontSection);
 
         this.props.children.forEach(child => {
+            if (!React.isValidElement(child)) return;
             if (child.props.href != undefined){
                 const section = document.getElementById(child.props.href.replace("#", ""));
                 if (section) this.observer.observe(section);
