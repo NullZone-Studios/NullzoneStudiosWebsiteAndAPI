@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const initialTeam = [
     { id: 1, name: 'Philip',    jobTitle: 'Founder, Lead Developer',              about: '', img: '' },
@@ -10,13 +10,19 @@ const initialTeam = [
 
 const emptyMember = { name: '', jobTitle: '', about: '', img: '' };
 
-function AdminAboutUs(data) {
+function AdminAboutUs({ data = [] }) {
     const [aboutText,  setAboutText]  = useState('Lorem ipsum dolor sit amet, consectetur adipiscing elit…');
     const [visionText, setVisionText] = useState('Lorem ipsum dolor sit amet, consectetur adipiscing elit…');
-    const [team,       setTeam]       = useState(initialTeam);
+    const [team,       setTeam]       = useState(Array.isArray(data) ? data : initialTeam);
     const [editingId,  setEditingId]  = useState(null);
     const [showForm,   setShowForm]   = useState(false);
-    const [form,       setForm]       = useState(emptyMember);
+    const [form, setForm] = useState(emptyMember);
+    
+    useEffect( () => {
+            if (Array.isArray(data)) {
+                setTeam(data);
+            }
+        }, [data]);
 
     const onChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
