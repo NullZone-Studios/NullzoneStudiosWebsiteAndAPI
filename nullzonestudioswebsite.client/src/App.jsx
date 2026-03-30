@@ -34,6 +34,7 @@ import useBlog from './hooks/useBlog'
 import RobbyProfile from './assets/images/RobbyProfile.svg'
 import ResetPasswordForm from './Components/Frontend/ResetPasswordForm/ResetPasswordForm'
 import useAuth from './hooks/useAuth'
+import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 
 function App() {
   const [showLoginPanel, setShowLoginPanel] = useState(false);
@@ -123,6 +124,8 @@ function App() {
         <NavItem href="#projects" icon="folder-fill">Projects</NavItem>
         <NavItem href="#blog" icon="stack">Blog</NavItem>
         <NavItem href="#contact-us" icon="telephone-fill">Contact us</NavItem>
+        {console.log(user?.accessLevel)}
+        {(user?.accessLevel === 1 || user?.accessLevel === 'Admin') && <NavItem href="/admin" icon="shield-lock-fill">Admin Panel</NavItem>}
         {!user ? <NavItem onClick={handleLoginClick} icon="lock-fill">Log in</NavItem> : <NavItem icon="unlock2-fill" onClick={logout}>Log out</NavItem>}
         <NavItem onClick={user ? handleUserProfileClick : handleLoginClick} disableHoverEffect><ProfileIcon isInteractive={false} src={userProfile.profilePicture} fallbackSrc={user ? RobbyProfile : ProfileStandinImg}></ProfileIcon></NavItem>
       </NavBar>
