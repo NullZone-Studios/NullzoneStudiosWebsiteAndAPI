@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const initialPosts = [
     { id: 1, title: 'First Post',  content: 'This is the first post.',  author: 'Author A', postImage: '', createdAt: '2026-03-25T13:34:00' },
@@ -18,17 +18,38 @@ const fmt = str => {
     return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
 };
 
-function AdminBlog({ data, callback = {} }) {
+function AdminBlog({ data, editPostId, callback = {} }) {
     const [posts,     setPosts]     = useState(Array.isArray(data) ? data : initialPosts);
     const [editingId, setEditingId] = useState(null);
     const [showForm,  setShowForm]  = useState(false);
     const [form,      setForm]      = useState(empty);
+    const handledEditPostIdRef = useRef(null);
 
     useEffect(() => {
         if (Array.isArray(data)) {
             setPosts(data);
         }
     }, [data]);
+
+    useEffect(() => {
+        if (!editPostId || handledEditPostIdRef.current === editPostId) {
+            return;
+        }
+
+        const matchedPost = posts.find(p => String(p.id) === String(editPostId));
+
+        if (!matchedPost) {
+            return;
+        }
+
+        openEdit(matchedPost);
+        handledEditPostIdRef.current = String(editPostId);
+
+        document.getElementById('admin-blog')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
+    }, [editPostId, posts]);
 
     const onChange  = e => setForm({ ...form, [e.target.name]: e.target.value });
     const openAdd   = () => { setEditingId(null); setForm(empty); setShowForm(true); };
@@ -56,7 +77,7 @@ function AdminBlog({ data, callback = {} }) {
         if (!form.Title.trim()) return;
         if (editingId) {
             if (callback.updatePost) {
-                const updatedPost = await callback.updatePost({ ...form, Id: editingId });
+                const updatedPost = await callback.updatePost({ ...form, id: editingId, Id: editingId });
                 setPosts(posts.map(p => p.id === editingId ? {
                     ...p,
                     title: form.Title,
