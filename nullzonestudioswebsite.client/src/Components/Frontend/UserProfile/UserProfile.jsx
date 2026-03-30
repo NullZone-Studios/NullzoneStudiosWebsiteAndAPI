@@ -3,9 +3,9 @@ import useAuth from "../../../hooks/useAuth";
 import RobbyProfile from "../../../assets/images/RobbyProfile.svg"
 import './UserProfile.css'
 
-function UserProfile({ isOpen, onClose, profilePicture, name, lastName, displayName, email, birthdate, gender, about, onSave }) {
+function UserProfile({ isOpen, onClose, profileImage, name, lastName, displayName, email, birthdate, gender, about, onSave }) {
     const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState({ name, lastName, displayName, email, birthdate, gender, about, profilePicture });
+    const [formData, setFormData] = useState({ name, lastName, displayName, email, birthdate, gender, about, profileImage });
     const { updateProfile } = useAuth();
     const [saveError, setSaveError] = useState(null);
     const [saving, setSaving] = useState(false);
@@ -14,9 +14,9 @@ function UserProfile({ isOpen, onClose, profilePicture, name, lastName, displayN
         if (isOpen) {
             setTimeout(() => setIsEditing(false), 0);
         }
-        setFormData({ name, lastName, displayName, email, birthdate, gender, about, profilePicture });
+        setFormData({ name, lastName, displayName, email, birthdate, gender, about, profileImage });
 
-    }, [isOpen, about, birthdate, displayName, email, gender, lastName, name, profilePicture]);
+    }, [isOpen, about, birthdate, displayName, email, gender, lastName, name, profileImage]);
 
     const updateField = (field) => (e) => setFormData(prev => ({ ...prev, [field]: e.target.value }));
 
@@ -32,9 +32,9 @@ function UserProfile({ isOpen, onClose, profilePicture, name, lastName, displayN
                 birthdate: formData.birthdate,
                 gender: formData.gender,
                 about: formData.about,
-                profileImage: formData.profilePicture
+                profileImage: formData.profileImage
             });
-            if (onSave) onSave({ ...formData, profilePicture });
+            if (onSave) onSave(formData);
             setIsEditing(false);
         } catch (err) {
             setSaveError(err.message || 'Failed to save profile. Please try again.');

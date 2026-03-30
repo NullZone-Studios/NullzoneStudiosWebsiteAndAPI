@@ -18,9 +18,11 @@ class ProjectCard extends React.Component {
                           <h1>{this.props.title}</h1>
                           <p>{this.props.content}</p>
                           <div className="call-to-action">
+                            { this.props.href && (
                             <a href={this.props.href}>
                               <button>See more</button>
                             </a>
+                            )}
                           </div>
                       </div>
                   </div>

@@ -24,7 +24,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                     p.Title,
                     p.Content,
                     p.PostImageUrl,
-                    p.CreatedAt,
+                    CreatedAt = p.CreatedAt.ToString("H:m d. MMM yyyy"),
                     AuthorID = p.AuthorID,
                     Author = p.Author.UserData.DisplayName,
                     AuthorImage = p.Author.UserData.ProfileImage,
@@ -49,7 +49,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 {
                     c.ID,
                     c.Content,
-                    c.CreatedAt,
+                    CreatedAt = c.CreatedAt.ToString("H:m d. MMM yyyy"),
                     Author = c.User.UserData.DisplayName,
                     AuthorImage = c.User.UserData.ProfileImage,
                     AuthorID = c.UserID
@@ -162,7 +162,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             {
                 comment.ID,
                 comment.Content,
-                comment.CreatedAt,
+                CreatedAt = comment.CreatedAt.ToString("H:m d. MMM yyyy"),
                 Author = user?.UserData?.DisplayName ?? "Unknown User",
                 AuthorImage = user?.UserData?.ProfileImage,
                 AuthorID = userID

@@ -44,7 +44,7 @@ function App() {
   const [resetToken, setResetToken] = useState(null);
 
   const [userProfile, setUserProfile] = useState({
-    profilePicture: null,
+    profileImage: null,
     name: "N/A",
     lastName: "N/A",
     displayName: "N/A",
@@ -99,7 +99,7 @@ function App() {
             birthdate: data.birthdate ?? '',
             gender: data.gender ?? '',
             about: data.about ?? '',
-            profilePicture: data.profileImage
+            profileImage: data.profileImage
         })
     }).catch(err => {
         console.error("Failed to fetch user profile:", err);
@@ -111,7 +111,7 @@ function App() {
             birthdate: "N/A",
             gender: "N/A",
             about: "N/A",
-            profilePicture: null
+            profileImage: null
         });
     })
 
@@ -127,7 +127,7 @@ function App() {
         {console.log(user?.accessLevel)}
         {(user?.accessLevel === 1 || user?.accessLevel === 'Admin') && <NavItem href="/admin" icon="shield-lock-fill">Admin Panel</NavItem>}
         {!user ? <NavItem onClick={handleLoginClick} icon="lock-fill">Log in</NavItem> : <NavItem icon="unlock2-fill" onClick={logout}>Log out</NavItem>}
-        <NavItem onClick={user ? handleUserProfileClick : handleLoginClick} disableHoverEffect><ProfileIcon isInteractive={false} src={userProfile.profilePicture} fallbackSrc={user ? RobbyProfile : ProfileStandinImg}></ProfileIcon></NavItem>
+        <NavItem onClick={user ? handleUserProfileClick : handleLoginClick} disableHoverEffect><ProfileIcon isInteractive={false} src={userProfile.profileImage} fallbackSrc={user ? RobbyProfile : ProfileStandinImg}></ProfileIcon></NavItem>
       </NavBar>
       <section id="front">
         <div className="content">
@@ -204,7 +204,7 @@ Alongside our roguelite prototypes, we also explore incremental and idle game me
       <UserProfile
         isOpen={showUserProfilePanel}
         onClose={() => setShowUserProfilePanel(false)}
-        profilePicture={userProfile.profilePicture}
+        profileImage={userProfile.profileImage}
         name={userProfile.name}
         lastName={userProfile.lastName}
         displayName={userProfile.displayName}

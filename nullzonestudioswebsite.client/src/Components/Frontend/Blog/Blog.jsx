@@ -104,20 +104,25 @@ class Blog extends React.Component {
     FormatPostDate = (createdAt) => {
         const createdDate = new Date(createdAt);
         const now = new Date();
-        const diffInMinutes = Math.max(Math.floor((now - createdDate) / 60000), 0);
+        const diffInSeconds = Math.max(Math.floor((now - createdDate) / 1000), 0);
+        const diffInMinutes = diffInSeconds / 60;
+        const diffInHours = diffInMinutes / 60;
+        const diffInDays = diffInHours / 24;
+
+        if (diffInSeconds < 60) {
+            return `Just now`;
+        }
 
         if (diffInMinutes < 60) {
-            return `${Math.max(diffInMinutes, 1)} minute${diffInMinutes === 1 ? "" : "s"} ago`;
+            return `${Math.max(Math.floor(diffInSeconds / 60), 1)} minute${diffInSeconds / 60 === 1 ? "" : "s"} ago`;
         }
 
-        const diffInHours = Math.floor(diffInMinutes / 60);
         if (diffInHours < 24) {
-            return `${diffInHours} hour${diffInHours === 1 ? "" : "s"} ago`;
+            return `${Math.max(Math.floor(diffInHours), 1)} hour${diffInHours === 1 ? "" : "s"} ago`;
         }
 
-        const diffInDays = Math.floor(diffInHours / 24);
         if (diffInDays < 7) {
-            return `${diffInDays} day${diffInDays === 1 ? "" : "s"} ago`;
+            return `${Math.max(Math.floor(diffInDays), 1)} day${diffInDays === 1 ? "" : "s"} ago`;
         }
 
         const day = String(createdDate.getDate()).padStart(2, "0");

@@ -12,11 +12,12 @@ const processQueue = (error) => {
 };
 
 const request = async (url, options = {}) => {
+    const isFormData = options.body instanceof FormData;
     const response = await fetch(`${BASE_URL}${url}`, {
         ...options,
         credentials: 'include',
         headers: {
-            'Content-Type': 'application/json',
+            ...(isFormData ? {} : {'Content-Type': 'application/json'}),
             ...options.headers,
         },
     });
@@ -60,7 +61,8 @@ const client = {
     get: (url, options = {}) => request(url, { ...options, method: 'GET' }),
     post: (url, body, options = {}) => request(url, { ...options, method: 'POST', body: JSON.stringify(body) }),
     put: (url, body, options = {}) => request(url, { ...options, method: 'PUT', body: JSON.stringify(body) }),
-    delete: (url, options = {}) => request(url, { ...options, method: 'DELETE' })
+    delete: (url, options = {}) => request(url, { ...options, method: 'DELETE' }),
+    upload: (url, formData, options = {}) => request(url, { ...options, method: 'POST', body: formData }),
 };
 
 export default client;
