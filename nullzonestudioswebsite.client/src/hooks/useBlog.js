@@ -38,7 +38,7 @@ const useBlog = () => {
     }, []);
 
     const react = useCallback(async (postID, type) => {
-        const response = await client.post(`/api/blog/${postID}/react`, { type });
+        const response = await client.post(`/api/blog/${postID}/react`, { Type: type });
         if (!response.ok) throw new Error('Failed to react to post.');
         const data = await response.json();
 
@@ -51,7 +51,7 @@ const useBlog = () => {
     }, []);
 
     const comment = useCallback(async (postID, content) => {
-        const response = await client.post(`/api/blog/${postID}/comment`, { content });
+        const response = await client.post(`/api/blog/${postID}/comment`, { Content: content });
         if (!response.ok) throw new Error('Failed to post comment.');
         const data = await response.json();
         return data;

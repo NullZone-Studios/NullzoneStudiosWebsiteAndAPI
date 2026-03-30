@@ -154,15 +154,17 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             Db.BlogComments.Add(comment);
             await Db.SaveChangesAsync();
 
-            var user = await Db.Users.FindAsync(userID);
+            var user = await Db.Users
+                .Include(u => u.UserData)
+                .FirstOrDefaultAsync(u => u.ID == userID);
 
             return Ok(new
             {
                 comment.ID,
                 comment.Content,
                 comment.CreatedAt,
-                Author = user!.UserData.DisplayName,
-                AuthorImage = user.UserData.ProfileImage,
+                Author = user?.UserData?.DisplayName ?? "Unknown User",
+                AuthorImage = user?.UserData?.ProfileImage,
                 AuthorID = userID
             });
         }
