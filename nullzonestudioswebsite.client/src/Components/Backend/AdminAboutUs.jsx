@@ -93,8 +93,8 @@ function AdminAboutUs({ data = [] }) {
                         {team.map(m => (
                             <tr key={m.id}>
                                 <td>
-                                    {m.img
-                                        ? <img src={m.img} alt={m.name} className="admin-avatar" />
+                                    {m.profileImage
+                                        ? <img src={m.profileImage} alt={m.firstName} className="admin-avatar" />
                                         : <div className="admin-avatar admin-avatar-placeholder"><i className="bi bi-person-fill"></i></div>
                                     }
                                 </td>
