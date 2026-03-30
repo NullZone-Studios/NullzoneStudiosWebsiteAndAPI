@@ -17,6 +17,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 .Where(u => u.UserWorkerData != null)
                 .Select(u => new
                 {
+                    UserID = u.UserData.UserID,
                     FirstName = u.UserData.FirstName,
                     LastName = u.UserData.LastName,
                     ProfileImage = u.UserData.ProfileImage,

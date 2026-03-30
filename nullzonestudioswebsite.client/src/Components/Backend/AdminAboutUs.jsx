@@ -34,7 +34,7 @@ function AdminAboutUs({ data = [] }) {
         setForm(f => ({ ...f, img: url }));
     };
 
-    const openEdit = m => { setEditingId(m.id); setForm({ name: m.name, jobTitle: m.jobTitle, about: m.about, img: m.img }); setShowForm(true); };
+    const openEdit = m => { setEditingId(m.userID); setForm({ name: m.name, jobTitle: m.jobTitle, about: m.about, img: m.img }); setShowForm(true); };
     const cancel   = () => { setEditingId(null); setShowForm(false); setForm(emptyMember); };
 
     const saveMember = () => {
@@ -91,7 +91,7 @@ function AdminAboutUs({ data = [] }) {
                     </thead>
                     <tbody>
                         {team.map(m => (
-                            <tr key={m.id}>
+                            <tr key={m.userID}>
                                 <td>
                                     {m.profileImage
                                         ? <img src={m.profileImage} alt={m.firstName} className="admin-avatar" />
@@ -104,7 +104,7 @@ function AdminAboutUs({ data = [] }) {
                                 <td>
                                     <div className="actions">
                                         <button className="admin-btn admin-btn-ghost" onClick={() => openEdit(m)}>Edit</button>
-                                        <button className="admin-btn admin-btn-danger" onClick={() => deleteMember(m.id)}>Delete</button>
+                                        <button className="admin-btn admin-btn-danger" onClick={() => deleteMember(m.userID)}>Delete</button>
                                     </div>
                                 </td>
                             </tr>
