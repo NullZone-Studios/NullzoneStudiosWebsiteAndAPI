@@ -98,7 +98,7 @@ function AdminAboutUs({ data = [] }) {
                                         : <div className="admin-avatar admin-avatar-placeholder"><i className="bi bi-person-fill"></i></div>
                                     }
                                 </td>
-                                <td>{m.name}</td>
+                                <td>{m.firstName} {m.lastName}</td>
                                 <td>{m.jobTitle}</td>
                                 <td>{m.about || <span style={{ opacity: 0.35 }}>—</span>}</td>
                                 <td>

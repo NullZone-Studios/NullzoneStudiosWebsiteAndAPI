@@ -15,19 +15,7 @@ const useEmployees= () => {
 
                 try {
                     const data = await response.json();
-                    const normalizedEmployees = Array.isArray(data)
-                        ? data.map((employee, index) => ({
-                            id: employee.id
-                                ?? employee.ID
-                                ?? `${employee.FirstName ?? employee.firstName ?? ""}-${employee.LastName ?? employee.lastName ?? ""}-${index}`,
-                            name: `${employee.FirstName ?? employee.firstName ?? ""} ${employee.LastName ?? employee.lastName ?? ""}`.trim(),
-                            jobTitle: employee.JobTitle ?? employee.jobTitle ?? "",
-                            about: employee.About ?? employee.about ?? "",
-                            img: employee.ProfileImage ?? employee.profileImage ?? "",
-                        }))
-                        : [];
-
-                    setEmployees(normalizedEmployees);
+                    setEmployees(data);
                 } catch (err) {
                     if (err instanceof TypeError)
                         throw new Error('Could not reach server.')
