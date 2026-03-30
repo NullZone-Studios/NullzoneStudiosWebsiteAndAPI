@@ -4,6 +4,7 @@
     text-decoration: none;
     list-style-type: none;
     color: var(--text-color);
+    line-height: 1.5em;
 }
 
 :root {
