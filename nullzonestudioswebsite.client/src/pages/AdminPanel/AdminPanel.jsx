@@ -4,6 +4,9 @@ import AdminAboutUs from '../../Components/Backend/AdminAboutUs';
 import AdminProjects from '../../Components/Backend/AdminProjects';
 import AdminBlog from '../../Components/Backend/AdminBlog';
 import AdminMessages from '../../Components/Backend/AdminMessages';
+import useEmployees from '../../hooks/useEmployees';
+import useProjects from '../../hooks/useProjects';
+import useBlog from '../../hooks/useBlog';
 
 const navItems = [
     { href: '#admin-about-us', icon: 'bi-people-fill',   label: 'About Us'  },
@@ -13,6 +16,10 @@ const navItems = [
 ];
 
 function AdminPanel() {
+    const employees = useEmployees();
+    const projects = useProjects();
+    const blog = useBlog();
+
     return (
         <div className="admin-panel">
             <aside className="admin-sidebar">
@@ -38,9 +45,9 @@ function AdminPanel() {
                 </div>
             </aside>
             <main className="admin-main">
-                <AdminAboutUs />
-                <AdminProjects />
-                <AdminBlog />
+                <AdminAboutUs data={employees.employees} />
+                <AdminProjects data={projects.projects} />
+                <AdminBlog data={blog.posts} />
                 <AdminMessages />
             </main>
         </div>

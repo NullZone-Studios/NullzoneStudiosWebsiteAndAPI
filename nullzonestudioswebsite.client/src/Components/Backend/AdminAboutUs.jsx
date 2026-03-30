@@ -10,7 +10,7 @@ const initialTeam = [
 
 const emptyMember = { name: '', jobTitle: '', about: '', img: '' };
 
-function AdminAboutUs() {
+function AdminAboutUs(data) {
     const [aboutText,  setAboutText]  = useState('Lorem ipsum dolor sit amet, consectetur adipiscing elit…');
     const [visionText, setVisionText] = useState('Lorem ipsum dolor sit amet, consectetur adipiscing elit…');
     const [team,       setTeam]       = useState(initialTeam);

@@ -10,7 +10,7 @@ const initialProjects = [
 
 const empty = { title: '', content: '', href: '', bannerImg: '' };
 
-function AdminProjects() {
+function AdminProjects(data) {
     const [projects,  setProjects]  = useState(initialProjects);
     const [editingId, setEditingId] = useState(null);
     const [showForm,  setShowForm]  = useState(false);

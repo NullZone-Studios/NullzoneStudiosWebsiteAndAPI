@@ -18,7 +18,7 @@ const fmt = str => {
     return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
 };
 
-function AdminBlog() {
+function AdminBlog(data) {
     const [posts,     setPosts]     = useState(initialPosts);
     const [editingId, setEditingId] = useState(null);
     const [showForm,  setShowForm]  = useState(false);
