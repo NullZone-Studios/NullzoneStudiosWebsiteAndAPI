@@ -137,7 +137,8 @@ class Blog extends React.Component {
     }
 
     ToggleLike = (postId) => {
-        const updatedPosts = this.state.posts.map(post => {
+        const previousPosts = this.state.posts;
+        const updatedPosts = previousPosts.map(post => {
             if (post.id !== postId) {
                 return post;
             }
@@ -162,12 +163,14 @@ class Blog extends React.Component {
         if (typeof this.props.callbacks?.react === "function") {
             Promise.resolve(this.props.callbacks.react(postId, "like")).catch(error => {
                 console.error("Failed to react to post:", error);
+                this.setState({ posts: previousPosts });
             });
         }
     }
 
     ToggleDislike = (postId) => {
-        const updatedPosts = this.state.posts.map(post => {
+        const previousPosts = this.state.posts;
+        const updatedPosts = previousPosts.map(post => {
             if (post.id !== postId) {
                 return post;
             }
@@ -192,6 +195,7 @@ class Blog extends React.Component {
         if (typeof this.props.callbacks?.react === "function") {
             Promise.resolve(this.props.callbacks.react(postId, "dislike")).catch(error => {
                 console.error("Failed to react to post:", error);
+                this.setState({ posts: previousPosts });
             });
         }
     }
@@ -248,7 +252,16 @@ class Blog extends React.Component {
             return;
         }
 
-        const updatedPosts = this.state.posts.map(post => {
+        const previousPosts = this.state.posts;
+        const tempCommentId = Date.now();
+        const temporaryComment = {
+            id: tempCommentId,
+            author: "You",
+            content: trimmedComment,
+            createdAt: "Just now"
+        };
+
+        const updatedPosts = previousPosts.map(post => {
             if (post.id !== postId) {
                 return post;
             }
@@ -257,12 +270,7 @@ class Blog extends React.Component {
                 ...post,
                 comments: [
                     ...post.comments,
-                    {
-                        id: Date.now(),
-                        author: "You",
-                        content: trimmedComment,
-                        createdAt: "Just now"
-                    }
+                    temporaryComment
                 ]
             };
         });
@@ -273,9 +281,43 @@ class Blog extends React.Component {
         });
 
         if (typeof this.props.callbacks?.comment === "function") {
-            Promise.resolve(this.props.callbacks.comment(postId, trimmedComment)).catch(error => {
-                console.error("Failed to submit comment:", error);
-            });
+            Promise.resolve(this.props.callbacks.comment(postId, trimmedComment))
+                .then(serverComment => {
+                    if (!serverComment) {
+                        return;
+                    }
+
+                    this.setState(prevState => ({
+                        posts: prevState.posts.map(post => {
+                            if (post.id !== postId) {
+                                return post;
+                            }
+
+                            return {
+                                ...post,
+                                comments: post.comments.map(comment => (
+                                    comment.id === tempCommentId
+                                        ? {
+                                            id: serverComment.id ?? serverComment.ID ?? tempCommentId,
+                                            author: serverComment.author ?? serverComment.Author ?? temporaryComment.author,
+                                            content: serverComment.content ?? serverComment.Content ?? temporaryComment.content,
+                                            createdAt: serverComment.createdAt ?? serverComment.CreatedAt ?? temporaryComment.createdAt,
+                                            authorImage: serverComment.authorImage ?? serverComment.AuthorImage,
+                                            authorId: serverComment.authorId ?? serverComment.AuthorID,
+                                        }
+                                        : comment
+                                ))
+                            };
+                        })
+                    }));
+                })
+                .catch(error => {
+                    console.error("Failed to submit comment:", error);
+                    this.setState({
+                        posts: previousPosts,
+                        draftComment: trimmedComment
+                    });
+                });
         }
     }
 
