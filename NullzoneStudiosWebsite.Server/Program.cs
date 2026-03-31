@@ -74,6 +74,7 @@ namespace NullzoneStudiosWebsite.Server
             builder.Services.AddScoped<TokenService>();
             builder.Services.AddScoped<EmailService>();
             builder.Services.AddHostedService<TokenCleanupService>();
+            builder.Services.AddHostedService<EmailSyncService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

@@ -183,7 +183,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 { "EXPIRATION_MINUTES", expirationMinutes }
             });
 
-            await emailService.SendEmailAsync(
+            await emailService.SendNoReplyEmailAsync(
                     user.Email,
                     "Password Reset Request",
                     body
@@ -225,7 +225,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 { "SUBJECT", request.Subject }
             });
 
-            await emailService.SendEmailAsync(
+            await emailService.SendNoReplyEmailAsync(
                     config["Email:SUPPORT_MAIL"] ?? throw new InvalidOperationException("Contact form recipient email not configured."),
                     "New Contact Form Submission",
                     body
@@ -235,7 +235,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             {
                 { "NAME", request.Name }
             });
-            await emailService.SendEmailAsync(
+            await emailService.SendNoReplyEmailAsync(
                     request.Email,
                     "Confirmation: Your Message Has Been Received",
                     confirmationBody
