@@ -29,6 +29,9 @@ function AdminAboutUs({
         }, [data]);
 
     const availableUsers = Array.isArray(users) ? users : [];
+    const availableUsersToAdd = availableUsers.filter(
+        user => editingId || !team.some(member => String(member.userID) === String(user.userID))
+    );
 
     const onChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -52,14 +55,19 @@ function AdminAboutUs({
     };
     const cancel   = () => { setEditingId(null); setShowForm(false); setForm(emptyMember); };
 
-    const saveMember = () => {
+    const saveMember = async () => {
         if (!editingId && !form.userID) return;
+
+        let succeeded = false;
         if (editingId) {
-            callback.updateEmployee(editingId, form);
+            succeeded = await callback.updateEmployee(editingId, form);
         } else {
-            callback.addEmployee(form);
+            succeeded = await callback.addEmployee(form);
         }
-        cancel();
+
+        if (succeeded) {
+            cancel();
+        }
     };
 
     const deleteMember = id => callback.deleteEmployee(id);
@@ -141,7 +149,7 @@ function AdminAboutUs({
                                     className={editingId ? 'admin-select-disabled' : ''}
                                 >
                                     <option value="">Select existing user</option>
-                                    {availableUsers.map(user => (
+                                    {availableUsersToAdd.map(user => (
                                         <option key={user.userID} value={user.userID}>
                                             {user.name}{user.displayName ? ` (${user.displayName})` : ''}
                                         </option>
