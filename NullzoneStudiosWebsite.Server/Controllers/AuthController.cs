@@ -212,6 +212,37 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             return Ok(new { message = "Password reset successful." });
         }
 
+        [HttpPost("contactForm")]
+        public async Task<IActionResult> ContactForm([FromBody] ContactFormRequest request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var body = emailService.LoadTemplate("ContactUsSupport.html", new Dictionary<string, string>
+            {
+                { "NAME", request.Name },
+                { "EMAIL", request.Email },
+                { "MESSAGE", request.Message },
+                { "SUBJECT", request.Subject }
+            });
+
+            await emailService.SendEmailAsync(
+                    config["ContactForm:RecipientEmail"] ?? throw new InvalidOperationException("Contact form recipient email not configured."),
+                    "New Contact Form Submission",
+                    body
+                );
+
+            var confirmationBody = emailService.LoadTemplate("ContactUsUser.html", new Dictionary<string, string>
+            {
+                { "NAME", request.Name }
+            });
+            await emailService.SendEmailAsync(
+                    request.Email,
+                    "Confirmation: Your Message Has Been Received",
+                    confirmationBody
+                );
+            return Ok(new { message = "Your message has been sent. We'll get back to you soon!" });
+        }
+
         private void SetTokenCookies(string accessToken, string refreshToken)
         {
             var ctx = httpContextAccessor.HttpContext!;
