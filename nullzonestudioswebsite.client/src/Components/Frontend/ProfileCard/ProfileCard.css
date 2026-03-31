@@ -43,6 +43,7 @@
     position: absolute;
     bottom: 1em;
     left: 1em;
+    width: calc(100% - 2em);
     text-transform: capitalize;
     display: flex;
     align-items: center;
@@ -57,7 +58,7 @@
 
 .profile-card .back h3 {
     position: absolute;
-    width: 100%;
+    width: calc(100% - 2em);
     top: 0;
     left: 0;
     padding: 1em;

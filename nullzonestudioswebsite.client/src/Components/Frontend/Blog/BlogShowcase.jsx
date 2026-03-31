@@ -34,7 +34,7 @@ function BlogShowcase({
                         onClick={onClose}
                         aria-label="Close blog showcase"
                     >
-                        <Icon name="x" />
+                        <Icon name="x-lg chongus" />
                     </button>
 
                     <div className="blog-showcase-author">

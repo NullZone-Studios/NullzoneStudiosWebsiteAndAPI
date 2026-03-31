@@ -226,7 +226,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             });
 
             await emailService.SendEmailAsync(
-                    config["ContactForm:RecipientEmail"] ?? throw new InvalidOperationException("Contact form recipient email not configured."),
+                    config["Email:SUPPORT_MAIL"] ?? throw new InvalidOperationException("Contact form recipient email not configured."),
                     "New Contact Form Submission",
                     body
                 );
