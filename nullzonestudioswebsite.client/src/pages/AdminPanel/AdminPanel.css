@@ -382,6 +382,11 @@
     color: var(--text-color);
 }
 
+.admin-select-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .admin-form-actions {
     display: flex;
     gap: 0.7em;

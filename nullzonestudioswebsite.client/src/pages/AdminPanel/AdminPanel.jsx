@@ -7,6 +7,7 @@ import AdminMessages from '../../Components/Backend/AdminMessages';
 import useEmployees from '../../hooks/useEmployees';
 import useProjects from '../../hooks/useProjects';
 import useBlog from '../../hooks/useBlog';
+import useUser from '../../hooks/useUser';
 
 const navItems = [
     { href: '#admin-about-us', icon: 'bi-people-fill',   label: 'About Us'  },
@@ -16,6 +17,7 @@ const navItems = [
 ];
 
 function AdminPanel() {
+    const users = useUser();
     const location = useLocation();
     const employees = useEmployees();
     const projects = useProjects();
@@ -47,7 +49,15 @@ function AdminPanel() {
                 </div>
             </aside>
             <main className="admin-main">
-                <AdminAboutUs data={employees.employees} />
+                <AdminAboutUs
+                    data={employees.employees}
+                    users={users.users}
+                    callback={{
+                        updateEmployee: employees.updateEmployee,
+                        addEmployee: employees.addEmployee,
+                        deleteEmployee: employees.deleteEmployee
+                    }}
+                />
                 <AdminProjects data={projects.projects} />
                 <AdminBlog
                     data={blog.posts}

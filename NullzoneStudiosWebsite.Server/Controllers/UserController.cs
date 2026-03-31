@@ -80,5 +80,21 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             await Db.SaveChangesAsync();
             return Ok(user);
         }
+
+        [Authorize]
+        [HttpGet("profiles")]
+        public async Task<IActionResult> GetProfiles()
+        {
+            var users = await Db.UserData.OrderByDescending(u => u.UserID).Select(u =>
+                new
+                {
+                    u.UserID,
+                    DisplayName = u.DisplayName,
+                    Name = u.FirstName + " " + u.LastName,
+                    About = u.About,
+                    ProfileImage = u.ProfileImage,
+                }).ToListAsync();
+            return Ok(users);
+        }
     }
 }

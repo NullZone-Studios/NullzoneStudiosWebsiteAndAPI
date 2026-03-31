@@ -8,9 +8,13 @@ const initialTeam = [
     { id: 5, name: 'Silas',     jobTitle: 'Founder, Lead 3D Artist',               about: '', img: '' },
 ];
 
-const emptyMember = { name: '', jobTitle: '', about: '', img: '' };
+const emptyMember = { userID: '', jobTitle: '', about: '', img: '' };
 
-function AdminAboutUs({ data = [] }) {
+function AdminAboutUs({
+    data = [],
+    users = [],
+    callback = { updateEmployee: () => {}, addEmployee: () => {}, deleteEmployee: () => {} }
+}) {
     const [aboutText,  setAboutText]  = useState('Lorem ipsum dolor sit amet, consectetur adipiscing elit…');
     const [visionText, setVisionText] = useState('Lorem ipsum dolor sit amet, consectetur adipiscing elit…');
     const [team,       setTeam]       = useState(Array.isArray(data) ? data : initialTeam);
@@ -24,6 +28,8 @@ function AdminAboutUs({ data = [] }) {
             }
         }, [data]);
 
+    const availableUsers = Array.isArray(users) ? users : [];
+
     const onChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
     const openAdd = () => { setEditingId(null); setForm(emptyMember); setShowForm(true); };
@@ -34,20 +40,29 @@ function AdminAboutUs({ data = [] }) {
         setForm(f => ({ ...f, img: url }));
     };
 
-    const openEdit = m => { setEditingId(m.userID); setForm({ name: m.name, jobTitle: m.jobTitle, about: m.about, img: m.img }); setShowForm(true); };
+    const openEdit = m => {
+        setEditingId(m.userID);
+        setForm({
+            userID: String(m.userID ?? ''),
+            jobTitle: m.jobTitle ?? '',
+            about: m.about ?? '',
+            img: m.profileImage ?? ''
+        });
+        setShowForm(true);
+    };
     const cancel   = () => { setEditingId(null); setShowForm(false); setForm(emptyMember); };
 
     const saveMember = () => {
-        if (!form.name.trim()) return;
+        if (!editingId && !form.userID) return;
         if (editingId) {
-            setTeam(team.map(m => m.id === editingId ? { ...m, ...form } : m));
+            callback.updateEmployee(editingId, form);
         } else {
-            setTeam([...team, { id: Date.now(), ...form }]);
+            callback.addEmployee(form);
         }
         cancel();
     };
 
-    const deleteMember = id => setTeam(team.filter(m => m.id !== id));
+    const deleteMember = id => callback.deleteEmployee(id);
 
     return (
         <section className="admin-section" id="admin-about-us">
@@ -118,8 +133,22 @@ function AdminAboutUs({ data = [] }) {
                         <div className="admin-form-row">
                             <div className="admin-form-group">
                                 <label>Name</label>
-                                <input type="text" name="name" value={form.name} onChange={onChange} placeholder="Member name" disabled style={{ opacity: 0.5, cursor: 'not-allowed' }} />
+                                <select
+                                    name="userID"
+                                    value={form.userID}
+                                    onChange={onChange}
+                                    disabled={!!editingId}
+                                    className={editingId ? 'admin-select-disabled' : ''}
+                                >
+                                    <option value="">Select existing user</option>
+                                    {availableUsers.map(user => (
+                                        <option key={user.userID} value={user.userID}>
+                                            {user.name}{user.displayName ? ` (${user.displayName})` : ''}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
+
                             <div className="admin-form-group">
                                 <label>Job Title</label>
                                 <input type="text" name="jobTitle" value={form.jobTitle} onChange={onChange} placeholder="e.g. Lead Developer" />
