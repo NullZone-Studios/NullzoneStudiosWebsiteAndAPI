@@ -1,8 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.2.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11620.152 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NullzoneStudiosWebsite.Server", "NullzoneStudiosWebsite.Server\NullzoneStudiosWebsite.Server.csproj", "{0E11B0DB-CE35-368D-A272-25C23F0B1030}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "nullzonestudioswebsite.client", "nullzonestudioswebsite.client\nullzonestudioswebsite.client.esproj", "{461A49AB-9F62-2231-2BBC-243724E13D14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +16,12 @@ Global
 		{0E11B0DB-CE35-368D-A272-25C23F0B1030}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E11B0DB-CE35-368D-A272-25C23F0B1030}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E11B0DB-CE35-368D-A272-25C23F0B1030}.Release|Any CPU.Build.0 = Release|Any CPU
+		{461A49AB-9F62-2231-2BBC-243724E13D14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{461A49AB-9F62-2231-2BBC-243724E13D14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{461A49AB-9F62-2231-2BBC-243724E13D14}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{461A49AB-9F62-2231-2BBC-243724E13D14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{461A49AB-9F62-2231-2BBC-243724E13D14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{461A49AB-9F62-2231-2BBC-243724E13D14}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
