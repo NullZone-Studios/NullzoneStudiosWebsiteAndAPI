@@ -1,4 +1,5 @@
 import React from "react";
+import client from "../../../api/client";
 import "./ContactForm.css";
 
 class ContactForm extends React.Component {
@@ -10,6 +11,8 @@ class ContactForm extends React.Component {
             subject: "",
             message: "",
             submitted: false,
+            loading: false,
+            error: null,
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -19,13 +22,32 @@ class ContactForm extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    handleSubmit(e) {
+    handleSubmit = async (e) => {
         e.preventDefault();
-        this.setState({ submitted: true });
-    }
+        this.setState({ error: null, loading: true });
+        try {
+            const response = await client.post('/api/auth/contactForm', { email: this.state.email, name: this.state.name, subject: this.state.subject, message: this.state.message });
+            if (!response.ok) {
+                let message = 'Failed to send contact email.';
+                try {
+                    const error = await response.json();
+                    message = error.message ?? message;
+                } catch {/* Empty */ }
+                throw new Error(message);
+            }
+            this.setState({ submitted: true });
+        } catch (err) {
+            if (err instanceof TypeError)
+                this.setState({ error: 'Unable to reach the server. Please try again later.' });
+            else
+                this.setState({ error: err.message });
+        } finally {
+            this.setState({ loading: false });
+        }
+    };
 
     render() {
-        const { submitted } = this.state;
+        const { submitted, loading, error } = this.state;
 
         return (
             <div className="contact-form-wrapper">
@@ -34,6 +56,9 @@ class ContactForm extends React.Component {
                 <p className="contact-form-subtitle">
                     Have a question, idea, or want to work with us? Drop us a message.
                 </p>
+
+                {error && <div className="contact-form-error">{error}</div>}
+                {loading && <div className="contact-form-loading">Sending message, please wait...</div>}
 
                 {submitted ? (
                     <div className="contact-form-success">
@@ -97,7 +122,7 @@ class ContactForm extends React.Component {
                             />
                         </div>
 
-                        <button className="contact-form-submit" type="submit">
+                        <button className="contact-form-submit" type="submit" onClick={this.handleSubmit} disabled={loading}>
                             Send Message
                         </button>
                     </form>

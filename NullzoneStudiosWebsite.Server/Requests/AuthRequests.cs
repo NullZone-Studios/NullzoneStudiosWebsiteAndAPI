@@ -17,4 +17,11 @@ namespace NullzoneStudiosWebsite.Server.Requests
             [Required] string Token,
             [Required][MinLength(8)] string NewPassword
         );
+
+    public record ContactFormRequest(
+        [Required] string Name,
+        [Required][EmailAddress] string Email,
+        [Required] string Subject,
+        [Required] string Message
+        );
 }

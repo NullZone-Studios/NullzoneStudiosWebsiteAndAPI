@@ -79,6 +79,18 @@ namespace NullzoneStudiosWebsite.Server
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            // CORS configuration
+            //! Change this in production to only allow specific origins
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             var app = builder.Build();
 
             app.UseDefaultFiles();
@@ -91,6 +103,8 @@ namespace NullzoneStudiosWebsite.Server
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();
