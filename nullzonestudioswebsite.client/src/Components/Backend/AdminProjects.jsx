@@ -10,7 +10,7 @@ const initialProjects = [
 
 const empty = { title: '', content: '', href: '', bannerImg: '' };
 
-function AdminProjects({ data = [] }) {
+function AdminProjects({ data = [] , callback = { updateProject: () => {}, addProject: () => {}, deleteProject: () => {} } }) {
     const [projects,  setProjects]  = useState(Array.isArray(data) ? data : initialProjects);
     const [editingId, setEditingId] = useState(null);
     const [showForm,  setShowForm]  = useState(false);
@@ -29,7 +29,7 @@ function AdminProjects({ data = [] }) {
         setShowForm(true);
     };
     const cancel    = () => { setEditingId(null); setShowForm(false); setForm(empty); };
-    const deleteRow = id => setProjects(projects.filter(p => p.id !== id));
+    const deleteRow = id => callback.deleteProject(id);
 
     useEffect( () => {
                 if (Array.isArray(data)) {
@@ -40,9 +40,9 @@ function AdminProjects({ data = [] }) {
     const save = () => {
         if (!form.title.trim()) return;
         if (editingId) {
-            setProjects(projects.map(p => p.id === editingId ? { ...p, ...form } : p));
+            callback.updateProject(editingId, form);
         } else {
-            setProjects([...projects, { id: Date.now(), ...form }]);
+            callback.addProject(form);
         }
         cancel();
     };
