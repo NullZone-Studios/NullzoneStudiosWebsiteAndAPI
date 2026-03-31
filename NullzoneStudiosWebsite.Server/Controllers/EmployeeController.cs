@@ -38,7 +38,8 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             var user = await Db.Users.FindAsync(userID);
             if (user is null) return NotFound();
 
-            if (user.UserWorkerData is not null)
+            var employeeAlreadyExists = await Db.UserEmployeeData.AnyAsync(employee => employee.UserID == userID);
+            if (employeeAlreadyExists)
                 return BadRequest(new { message = "User already has worker data." });
 
             var employeeData = new UserEmployeeData

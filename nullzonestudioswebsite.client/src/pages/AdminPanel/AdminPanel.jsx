@@ -58,7 +58,7 @@ function AdminPanel() {
                         deleteEmployee: employees.deleteEmployee
                     }}
                 />
-                <AdminProjects data={projects.projects} />
+                <AdminProjects data={projects.projects} callback={{ updateProject: projects.updateProject, addProject: projects.addProject, deleteProject: projects.deleteProject }} />
                 <AdminBlog
                     data={blog.posts}
                     editPostId={editPostId}

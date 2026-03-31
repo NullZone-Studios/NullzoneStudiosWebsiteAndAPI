@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const initialProjects = [
     { id: 1, title: 'Itch.IO',                           content: 'We have an Itch.IO page where you can check our old prototypes.',                            href: 'https://nullzone-studios.itch.io',                                         bannerImg: '' },
@@ -10,24 +10,39 @@ const initialProjects = [
 
 const empty = { title: '', content: '', href: '', bannerImg: '' };
 
-function AdminProjects(data) {
-    const [projects,  setProjects]  = useState(initialProjects);
+function AdminProjects({ data = [] , callback = { updateProject: () => {}, addProject: () => {}, deleteProject: () => {} } }) {
+    const [projects,  setProjects]  = useState(Array.isArray(data) ? data : initialProjects);
     const [editingId, setEditingId] = useState(null);
     const [showForm,  setShowForm]  = useState(false);
     const [form,      setForm]      = useState(empty);
 
     const onChange  = e => setForm({ ...form, [e.target.name]: e.target.value });
     const openAdd   = () => { setEditingId(null); setForm(empty); setShowForm(true); };
-    const openEdit  = p => { setEditingId(p.id); setForm({ title: p.title, content: p.content, href: p.href, bannerImg: p.bannerImg }); setShowForm(true); };
+    const openEdit  = p => {
+        setEditingId(p.id);
+        setForm({
+            title: p.title ?? '',
+            content: p.content ?? '',
+            href: p.href ?? '',
+            bannerImg: p.bannerImg ?? p.bannerImageUrl ?? ''
+        });
+        setShowForm(true);
+    };
     const cancel    = () => { setEditingId(null); setShowForm(false); setForm(empty); };
-    const deleteRow = id => setProjects(projects.filter(p => p.id !== id));
+    const deleteRow = id => callback.deleteProject(id);
+
+    useEffect( () => {
+                if (Array.isArray(data)) {
+                    setProjects(data);
+                }
+            }, [data]);
 
     const save = () => {
         if (!form.title.trim()) return;
         if (editingId) {
-            setProjects(projects.map(p => p.id === editingId ? { ...p, ...form } : p));
+            callback.updateProject(editingId, form);
         } else {
-            setProjects([...projects, { id: Date.now(), ...form }]);
+            callback.addProject(form);
         }
         cancel();
     };

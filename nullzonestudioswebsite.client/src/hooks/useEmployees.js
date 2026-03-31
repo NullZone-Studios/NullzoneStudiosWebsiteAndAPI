@@ -1,6 +1,19 @@
 import { useState, useEffect } from "react";
 import client from "../api/client";
 
+const getResponseMessage = async (response, fallbackMessage) => {
+    try {
+        const data = await response.json();
+        if (data?.message) {
+            return data.message;
+        }
+    } catch {
+        // Ignore invalid or empty response bodies and fall back to a generic message.
+    }
+
+    return fallbackMessage;
+};
+
 const useEmployees= () => {
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -37,29 +50,41 @@ const useEmployees= () => {
     const updateEmployee = async (id, updatedData) => {
         const response = await client.put(`/api/employees/${id}/employee`, updatedData);
         if (!response.ok) {
-            let message = 'Failed to update employee.';
+            const message = await getResponseMessage(response, 'Failed to update employee.');
             setError(message);
+            return false;
         }
+
         setEmployees(prev => prev.map(emp => emp.userID === id ? { ...emp, ...updatedData } : emp));
+        setError(null);
+        return true;
     };
 
     const addEmployee = async (employeeData) => {
         const response = await client.post(`/api/employees/${employeeData.userID}/employee`, employeeData);
         if (!response.ok) {
-            let message = 'Failed to add employee.';
+            const message = await getResponseMessage(response, 'Failed to add employee.');
             setError(message);
+            return false;
         }
+
         const createdEmployee = await response.json().catch(() => null);
         setEmployees(prev => [...prev, createdEmployee ? { ...employeeData, ...createdEmployee } : employeeData]);
+        setError(null);
+        return true;
     };
 
     const deleteEmployee = async (id) => {
         const response = await client.delete(`/api/employees/${id}/employee`);
         if (!response.ok) {
-            let message = 'Failed to delete employee.';
+            const message = await getResponseMessage(response, 'Failed to delete employee.');
             setError(message);
+            return false;
         }
+
         setEmployees(prev => prev.filter(emp => emp.userID !== id));
+        setError(null);
+        return true;
     };
 
     return { employees, loading, error, updateEmployee, addEmployee, deleteEmployee };
