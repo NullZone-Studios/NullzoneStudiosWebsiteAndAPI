@@ -4,9 +4,9 @@ import './ProjectsSlider.css'
 class ProjectSlider extends React.Component {
     constructor(props){
         super(props);
-        const count = React.Children.count(props.children);
         this.state = {
-            currentIndex: Math.floor(count / 2),
+            count: React.Children.count(props.children),
+            currentIndex: Math.floor(React.Children.count(props.children) / 2),
             hoveredIndex: null,
         }
     }

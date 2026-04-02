@@ -169,9 +169,9 @@ Alongside our roguelite prototypes, we also explore incremental and idle game me
             <div className="header">
                 <h1>Check out our recent projects</h1>
             </div>
-            <ProjectSlider>
               {projects.loading && <Throbber />}
               {projects.error && <LoadingError error={projects.error} />}
+            {!projects.loading && <ProjectSlider>
               {projects.projects.map(project => (
                 <ProjectCard
                   key={project.id}
@@ -183,6 +183,7 @@ Alongside our roguelite prototypes, we also explore incremental and idle game me
               ))
               }
             </ProjectSlider>
+            }
       </section>
       <section id="blog" >
         <div className="header">
