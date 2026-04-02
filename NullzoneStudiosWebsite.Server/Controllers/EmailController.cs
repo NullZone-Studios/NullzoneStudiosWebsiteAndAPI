@@ -44,6 +44,8 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             pageSize = Math.Clamp(pageSize, 1, 50);
 
             if (!await IsAdminAsync()) return Forbid();
+
+            var totalConversations = await Db.Conversations.CountAsync();
             var conversations = await Db.Conversations
                 .Select(c => new
                 {
@@ -72,8 +74,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             return Ok(new
             {
                 Conversations = conversations,
-                Total = conversations.Count,
-                TotalCount = (int)(conversations.Count / pageSize),
+                Total = totalConversations,
             });
         }
 
