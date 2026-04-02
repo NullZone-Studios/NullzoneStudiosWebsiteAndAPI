@@ -53,7 +53,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                     c.Subject,
                     LastMessage = c.Emails.OrderByDescending(e => e.Date)
                         .Select(e => new {
-                            e.From,
+                            From = Regex.Replace(e.From, "<.*?>", "").Replace('"', ' ').Trim(),
                             e.Subject,
                             TextBodyPreview = e.TextBody != null
                                 ? e.TextBody.Length > 200 
@@ -73,7 +73,14 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 .ToListAsync();
             return Ok(new
             {
-                Conversations = conversations,
+                Conversations = conversations.Select(c => new
+                {
+                    c.ID,
+                    c.Subject,
+                    c.LastMessage,
+                    c.UnreadCount,
+                    LastMessageDate = c.LastMessageDate.ToString("dd/MM/yyyy H:mm")
+                }),
                 Total = totalConversations,
             });
         }
@@ -103,7 +110,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                             e.To,
                             e.Subject,
                             e.TextBody,
-                            e.Date,
+                            Date = e.Date.ToString("dd/MM/yyyy H:mm"),
                             Seen = true
                         })
                         .ToList()
@@ -165,7 +172,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                     e.Subject,
                     e.TextBody,
                     e.HtmlBody,
-                    e.Date,
+                    Date = e.Date.ToString("dd/MM/yyyy H:mm"),
                     e.Seen
                 })
                 .Select(e => e.HtmlBody)
@@ -242,7 +249,18 @@ namespace NullzoneStudiosWebsite.Server.Controllers
             sentEmail.MessageID = sentMessageID;
             await Db.SaveChangesAsync();
 
-            return Ok(sentEmail);
+            return Ok(new
+            {
+                sentEmail.InReplyTo,
+                sentEmail.From,
+                sentEmail.To,
+                sentEmail.Subject,
+                sentEmail.TextBody,
+                sentEmail.HtmlBody,
+                Date = sentEmail.Date.ToString("dd/MM/yyyy H:mm"),
+                sentEmail.Seen,
+                sentEmail.ConversationID
+            });
         }
 
         [Authorize]
