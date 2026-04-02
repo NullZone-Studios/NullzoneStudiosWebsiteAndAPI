@@ -11,8 +11,6 @@ namespace NullzoneStudiosWebsite.Server.DataModels.Email
         [Column("subject")]
         public string Subject { get; set; } = "";
         public DateTimeOffset LastMessageDate { get; set; }
-        public bool HasUnread { get; set; }
-
         public ICollection<Email> Emails { get; set; } = [];
     }
 }

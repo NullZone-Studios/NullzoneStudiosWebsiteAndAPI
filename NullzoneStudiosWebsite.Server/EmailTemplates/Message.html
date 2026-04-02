@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        .container {
+            font-family: sans-serif;
+            background: #0f0f0fff;
+            color: aliceblue;
+            padding: 1em;
+            border: solid #5151c7 1px;
+            border-radius: 15px;
+        }
+
+            .container * {
+                padding: 0;
+                margin: 0;
+            }
+
+            .container .card-body {
+                display: flex;
+                flex-direction: column;
+                justify-content: start;
+            }
+
+            .container .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                height: 10vh;
+            }
+
+                .container .header div {
+                    line-height: 2em;
+                }
+
+                .container .header img {
+                    height: 100%;
+                }
+
+            .container hr {
+                background: linear-gradient(90deg, #00000000 0%, #ffffffa0 50%, #00000000 100%);
+                height: 2px;
+                border: none;
+                margin: 1em 0em;
+            }
+
+            .container .info {
+                line-height: 1.5em;
+            }
+
+                .container .info p {
+                    margin: 1em 0em;
+                }
+
+            .container .button {
+                color: aliceblue;
+                text-decoration: none;
+                padding: 1em;
+                margin: 1em 0em;
+                background: linear-gradient(90deg, #2727c9 0%, #9f6f10 100%);
+                border-radius: 10px;
+                width: fit-content;
+            }
+
+            .container .sent-by {
+                text-align: center;
+            }
+
+            .container .sent-by img {
+                width: 50%;
+            }
+
+            .employee-regards {
+                font-size: 1.1em;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <div class="header">
+                    <div>
+                        <h1>SUPPORT</h1>
+                    </div>
+                    <img src="https://lh3.googleusercontent.com/pw/AP1GczOeC5Bhahd71egRg4EFwFKTmD1OLxsY4KyM5s3ARcAVyGRtM_v2DGQnFbFH7gSiK9Q6R4rYK35a0nuqZoTVTbtcyzOphB6pKttnonNCU2sfuyvTA5cuaSfCDctH-MWgmFBCETcWim4hfK8Rk9ngPIA=w512-h512-s-no" alt="">
+                </div>
+                <hr>
+                <div class="info">
+                    <p>{{MESSAGE}}</p>
+                </div>
+                <p class="employee-regards"><b>Sincerely,<br/>{{EMPLOYEE_NAME}}</b></p>
+                <hr class="mt-2">
+                <div class="sent-by">
+                    This email was sent by<br /><a href="https://nullzonestudios.com/"><img src="https://lh3.googleusercontent.com/pw/AP1GczMWyj4CYpm-4zZwctDcjor90l2Sx4KlxRnBEmUkNY999SSYWbYC6TdeVxGJbB30lQ6ogR2jp0WeBVu4iIHG7pMUZIv7y3bwBE3NWXldPntJ9XrRlR9otBEc-wSiSPAmNUVETjaSN6yUuHY9R9Qo2mg=w1243-h285-s-no" alt="NullZone Studios"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

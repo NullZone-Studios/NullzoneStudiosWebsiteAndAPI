@@ -6,6 +6,7 @@ using MailKit;
 using NullzoneStudiosWebsite.Server.DataModels;
 using NullzoneStudiosWebsite.Server.DataModels.Email;
 using Microsoft.EntityFrameworkCore;
+using MimeKit.Utils;
 
 namespace NullzoneStudiosWebsite.Server.Services
 {
@@ -18,7 +19,7 @@ namespace NullzoneStudiosWebsite.Server.Services
             using var client = new ImapClient();
             var incoming = GetIncomingEmailConfig();
 
-            await client.ConnectAsync(incoming.host, incoming.port, true);
+            await client.ConnectAsync(incoming.host, incoming.port, SecureSocketOptions.StartTls);
             await client.AuthenticateAsync(incoming.mail, incoming.password);
 
             var inbox = client.Inbox;
@@ -40,19 +41,19 @@ namespace NullzoneStudiosWebsite.Server.Services
             await inbox.OpenAsync(FolderAccess.ReadOnly);
 
             var summaries = await inbox.FetchAsync(0, -1, MessageSummaryItems.Envelope | MessageSummaryItems.Flags | MessageSummaryItems.UniqueId);
+            var existingIDs = await db.Emails
+                .Select(e => e.MessageID)
+                .ToHashSetAsync();
 
-            foreach (var summary in summaries)
-            {
-                var messageID = summary.Envelope?.MessageId;
-                if (string.IsNullOrEmpty(messageID))
-                    continue;
+            var newSummaries = summaries
+                .Where(s => !string.IsNullOrEmpty(s.Envelope?.MessageId) 
+                    && !existingIDs.Contains(s.Envelope.MessageId))
+                .ToList();
 
-                bool exists = db.Emails.Any(e => e.MessageID == messageID);
-                if (exists)
-                    continue;
-
+            foreach (var summary in newSummaries) {
                 var message = await inbox.GetMessageAsync(summary.UniqueId);
                 var seen = summary.Flags?.HasFlag(MessageFlags.Seen) ?? false;
+                var messageID = summary.Envelope!.MessageId!;
 
                 var conversation = await ResolveConversation(db, message);
 
@@ -67,10 +68,10 @@ namespace NullzoneStudiosWebsite.Server.Services
                     Date = message.Date,
                     Seen = seen,
                     ConversationID = conversation.ID
-
                 });
-
-                conversation.LastMessageDate = message.Date;
+                
+                if (message.Date > conversation.LastMessageDate)
+                    conversation.LastMessageDate = message.Date;
             }
 
             await db.SaveChangesAsync();
@@ -78,10 +79,14 @@ namespace NullzoneStudiosWebsite.Server.Services
         }
 
         public record EmailCredentials(string mail, string password);
-        public async Task SendEmailFromAsync(string toEmail, string subject, string htmlBody, EmailCredentials credentials, string? inReplyTo = null)
+        public async Task<string> SendEmailFromAsync(string toEmail, string subject, string htmlBody, EmailCredentials credentials, string? inReplyTo = null)
         {
+            var messageID = MimeUtils.GenerateMessageId(config["Email:DOMAIN"] ?? throw new InvalidOperationException("Email domain not configured."));
+
             var message = new MimeMessage();
+            message.MessageId = messageID;
             message.From.Add(MailboxAddress.Parse(credentials.mail));
+            message.To.Add(MailboxAddress.Parse(toEmail));
             if (inReplyTo is not null) 
                 message.Headers.Add(new Header(HeaderId.InReplyTo, inReplyTo));
             message.Subject = subject;
@@ -103,6 +108,8 @@ namespace NullzoneStudiosWebsite.Server.Services
 
             await smtp.SendAsync(message);
             await smtp.DisconnectAsync(true);
+
+            return messageID;
         }
 
         public async Task SendNoReplyEmailAsync(string toEmail, string subject, string htmlBody)
@@ -112,6 +119,33 @@ namespace NullzoneStudiosWebsite.Server.Services
                     config["Email:PASSWORD"] ?? throw new InvalidOperationException("Email PASSWORD not configured.")
                 );
             await SendEmailFromAsync(toEmail, subject, htmlBody, credentials);
+        }
+
+        public async Task DeleteMessagesAsync(IEnumerable<string> emailIDs)
+        {
+            using var client = new ImapClient();
+            var incoming = GetIncomingEmailConfig();
+
+            await client.ConnectAsync(incoming.host, incoming.port, SecureSocketOptions.StartTls);
+            await client.AuthenticateAsync(incoming.mail, incoming.password);
+
+            var inbox = client.Inbox;
+            await inbox.OpenAsync(FolderAccess.ReadWrite);
+
+            var summaries = await inbox.FetchAsync(0, -1, MessageSummaryItems.Envelope | MessageSummaryItems.UniqueId);
+            var emailIDSet = emailIDs.ToHashSet();
+            var toDelete = summaries
+                .Where(s => !string.IsNullOrEmpty(s.Envelope?.MessageId) && emailIDSet.Contains(s.Envelope.MessageId))
+                .Select(s => s.UniqueId)
+                .ToList();
+
+            if (toDelete.Any())
+            {
+                await inbox.AddFlagsAsync(toDelete, MessageFlags.Deleted, silent: true);
+                await inbox.ExpungeAsync();
+            }
+
+            await client.DisconnectAsync(true);
         }
 
         public string LoadTemplate(string templateName, Dictionary<string, string> replacements)
@@ -139,30 +173,43 @@ namespace NullzoneStudiosWebsite.Server.Services
 
         private async Task<Conversation> ResolveConversation(DataContext db, MimeMessage message)
         {
-            if (!string.IsNullOrEmpty(message.InReplyTo))
+            var replyID = message.InReplyTo;
+
+            if (string.IsNullOrEmpty(replyID) && message.References.Count > 0)
+                replyID = message.References.LastOrDefault();
+
+            if (!string.IsNullOrEmpty(replyID))
             {
                 var existing = await db.Emails
                     .Include(e => e.Conversation)
-                    .FirstOrDefaultAsync(e => e.MessageID == message.InReplyTo);
+                    .FirstOrDefaultAsync(e => e.MessageID == replyID);
 
                 if (existing is not null)
                     return existing.Conversation;
             }
 
             var subject = message.Subject ?? "";
-            var convo = await db.Conversations.FirstOrDefaultAsync(c => c.Subject == subject);
+            var normalizedSubject = NormalizeSubject(subject);
+            var convo = await db.Conversations.FirstOrDefaultAsync(c => c.Subject == normalizedSubject && c.Emails.Any(e => e.From == message.From.ToString()));
             if (convo is not null)
                 return convo;
 
             var newConvo = new Conversation
             {
-                Subject = subject,
+                Subject = normalizedSubject,
                 LastMessageDate = message.Date
             };
 
             db.Conversations.Add(newConvo);
             await db.SaveChangesAsync();
             return newConvo;
+        }
+
+        private static string NormalizeSubject(string subject)
+        {
+            while (subject.StartsWith("Re:", StringComparison.OrdinalIgnoreCase))
+                subject = subject.Substring(3).TrimStart();
+            return subject.Trim();
         }
     }
 }

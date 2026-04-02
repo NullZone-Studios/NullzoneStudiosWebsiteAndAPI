@@ -1,4 +1,9 @@
-﻿namespace NullzoneStudiosWebsite.Server.Requests
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NullzoneStudiosWebsite.Server.Requests
 {
-    public record ReplyEmailRequest(Guid emailID, string? to, string body);
+    public record ReplyEmailRequest(
+        Guid emailID, 
+        [Required][EmailAddress] string? to, 
+        [Required][MinLength(1)] string body);
 }
