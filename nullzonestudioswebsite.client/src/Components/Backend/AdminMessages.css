@@ -1,0 +1,34 @@
+.conversations-refresh-button {
+    background: none;
+    height: 2em;
+    border-radius: 50%;
+    border: none;
+    width: 2em;
+    transition: transform .2s ease-out;
+}
+
+.conversations-refresh-button:hover {
+    transform: scale(1.05);
+    background: #ffffff70;
+}
+
+.conversations-refresh-button:active{
+    transform: scale(1);
+}
+
+.conversations-refresh-button .bi {
+    --angle: 0deg;
+}
+
+.loading .bi {
+    animation: loading-spin 2s infinite ease;
+}
+
+@keyframes loading-spin {
+    from {
+        --angle: 0deg;
+    }
+    to {
+        --angle: 360deg;
+    }
+}

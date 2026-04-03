@@ -250,6 +250,10 @@
     padding: 0.25em 0.8em;
     font-size: 0.8em;
     letter-spacing: 0.1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: capitalize;
 }
 
 /* ── Table ──────────────────────────────────────────────── */
@@ -391,4 +395,71 @@
     display: flex;
     gap: 0.7em;
     justify-content: flex-end;
+}
+
+.admin-page-buttons {
+    display: flex;
+    justify-content: end;
+    gap: .1em;
+    padding: 1em;
+}
+
+.admin-page-buttons button {
+    font-size: 1.1vw;
+    padding: 5px;
+    background: none;
+    width: 2vw;
+    aspect-ratio: 1/1;
+    border: 1px solid #ffffff70;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .2s ease-out;
+}
+
+.admin-page-buttons button.active {
+    text-decoration: underline;
+    background: #ffffff70;
+}
+
+.admin-page-buttons button:disabled {
+    opacity: .6;
+    cursor: default;
+}
+
+.admin-page-buttons button:disabled:hover {
+    background: none;
+}
+
+.admin-page-buttons button:hover {
+    background: #ffffff70;
+}
+
+.message-badge {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ffffffa0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: transparent;
+}
+
+.message-badge.unread {
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(135deg, #7a4bff 0%, #ff7070 100%);
+}
+
+.flx-row{
+    display: flex;
+    flex-direction: row;
+}
+
+.gp-1 {
+    gap:1em;
+}
+
+.gp-2 {
+    gap: 2em;
 }

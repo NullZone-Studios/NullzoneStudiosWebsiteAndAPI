@@ -8,6 +8,7 @@ import useEmployees from '../../hooks/useEmployees';
 import useProjects from '../../hooks/useProjects';
 import useBlog from '../../hooks/useBlog';
 import useUser from '../../hooks/useUser';
+import ToastNotifier from '../../Components/Frontend/ToastNotifier/ToastNotifier';
 
 const navItems = [
     { href: '#admin-about-us', icon: 'bi-people-fill',   label: 'About Us'  },
@@ -65,6 +66,7 @@ function AdminPanel() {
                     callback={{ updatePost: blog.updatePost, createPost: blog.createPost, deletePost: blog.deletePost }}
                 />
                 <AdminMessages />
+                <ToastNotifier />
             </main>
         </div>
     );

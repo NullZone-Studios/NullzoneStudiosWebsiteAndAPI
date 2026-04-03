@@ -227,7 +227,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
 
             await emailService.SendNoReplyEmailAsync(
                     config["Email:SUPPORT_MAIL"] ?? throw new InvalidOperationException("Contact form recipient email not configured."),
-                    "New Contact Form Submission",
+                    $"New Contact Form Submission: {request.Subject}",
                     body
                 );
 
