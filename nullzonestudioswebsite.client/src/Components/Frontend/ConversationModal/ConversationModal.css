@@ -1,0 +1,186 @@
+.modal-backdrop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000a0;
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+}
+
+.modal-backdrop .modal-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 60%;
+    transform: translate(-50%, -50%);
+    padding: 1em;
+    background: linear-gradient(135deg, #151150 0%, #533810 100%);
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-wrapper::after,
+.modal-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(50% + 3px);
+    height: calc(60% + 3px);
+    padding: 1em;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    background: linear-gradient(135deg, #2a2299 0%, #8b5f1b 100%);
+    border-radius: 1em;
+}
+
+.modal-wrapper::after{
+    filter: blur(10px);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.modal-header .close {
+    background: none;
+    border: none;
+    font-size: 1em;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    transition: all .2s ease-out;
+}
+
+.modal-header .close:hover{
+    background: #ffffff80;
+    transform: scale(1.05);
+}
+
+.modal-header .close:active{
+    transform: scale(1);
+}
+
+.modal-header .conversation-info {
+    font-size: .9em;
+    display: flex;
+    flex-direction: column;
+    padding: .5em;
+}
+
+.modal-header .conversation-info h3 {
+    text-transform: capitalize;
+}
+.modal-header .conversation-info span {
+    text-transform: uppercase;
+    opacity: .6;
+}
+
+.modal-body {
+    width: calc(100% - 2em);
+    flex-grow: 1;
+    background: #000000a0;
+    border-radius: .5em;
+    padding: 1em;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: .25em;
+    scroll-behavior: smooth;
+    
+}
+
+.conversation-start-label {
+    font-size: .8em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.modal-reply {
+    margin-top: .5em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: .25em;
+    align-items: center;
+}
+
+.modal-reply textarea {
+    flex-grow: 1;
+    background: #00000080;
+    color: aliceblue;
+    padding: .1em;
+    border-radius: .5em;
+    border: 2px solid #ffffff00;
+    font-size: .9em;
+}
+
+.modal-reply button {
+    height: 100%;
+    border-radius: .5em;
+}
+
+.email-bubble-wrapper {
+    width: 100%;
+}
+
+.email-bubble-wrapper .email-bubble {
+    position: relative;
+    border-radius: .8em;
+    border: 1px #ffffff80 solid;
+    padding: .5em;
+    width: 50%;
+    overflow: hidden;
+}
+
+.email-bubble-wrapper .email-bubble .email-bubble-preview {
+    width: 100%;
+    overflow: hidden;
+}
+
+.email-bubble-wrapper .email-bubble .email-bubble-preview pre {
+    width: 100%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.email-bubble-wrapper.recieved .email-bubble {
+    float: left;
+}
+
+.email-bubble-wrapper.sent .email-bubble {
+    float: right;
+}
+
+.email-bubble .email-bubble-info {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: .25em;
+}
+
+.email-bubble-info button {
+    background: none;
+    border:  none;
+    text-decoration: underline;
+    text-transform: uppercase;
+    font-size: .8em;
+}
+
+.email-bubble .email-bubble-date {
+    font-size: .7em;
+}

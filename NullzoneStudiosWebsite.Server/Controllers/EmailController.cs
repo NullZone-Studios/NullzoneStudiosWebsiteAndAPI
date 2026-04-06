@@ -81,6 +81,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                     c.UnreadCount,
                     LastMessageDate = c.LastMessageDate.ToString("dd/MM/yyyy H:mm")
                 }),
+                TotalUnread = await Db.Conversations.SumAsync(c => c.Emails.Count(e => !e.Seen)),
                 Total = totalConversations,
             });
         }
@@ -98,6 +99,8 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 {
                     c.ID,
                     c.Subject,
+                    c.SenderName,
+                    c.SenderEmail,
                     TotalEmails = c.Emails.Count(),
                     Emails = c.Emails
                         .OrderBy(e => e.Date)
@@ -137,7 +140,12 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 conversation.ID,
                 conversation.Subject,
                 conversation.TotalEmails,
-                conversation.Emails
+                conversation.Emails,
+                Sender = new
+                {
+                    Name = conversation.SenderName ?? "Unknown",
+                    Email = conversation.SenderEmail
+                }
             });
         }
 
@@ -206,7 +214,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 .FirstOrDefaultAsync(e => e.ID == request.emailID);
 
             if (original == null)
-                return NotFound("Original email not found");
+                return NotFound(new { message = "Original email not found" });
 
             var toEmail = request.to ?? original.From;
 

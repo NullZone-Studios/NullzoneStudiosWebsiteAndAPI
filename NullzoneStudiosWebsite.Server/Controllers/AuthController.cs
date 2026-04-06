@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MimeKit.Utils;
 using NullzoneStudiosWebsite.Server.DataModels;
+using NullzoneStudiosWebsite.Server.DataModels.Email;
 using NullzoneStudiosWebsite.Server.Requests;
 using NullzoneStudiosWebsite.Server.Services;
 using NullzoneStudiosWebsite.Server.Tools;
@@ -217,19 +219,30 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var body = emailService.LoadTemplate("ContactUsSupport.html", new Dictionary<string, string>
+            var conversation = new Conversation
             {
-                { "NAME", request.Name },
-                { "EMAIL", request.Email },
-                { "MESSAGE", request.Message },
-                { "SUBJECT", request.Subject }
+                Subject = request.Subject,
+                SenderName = request.Name,
+                SenderEmail = request.Email,
+                LastMessageDate = DateTimeOffset.UtcNow,
+            };
+            Db.Conversations.Add(conversation);
+            Db.Emails.Add(new Email
+            {
+                MessageID = MimeUtils.GenerateMessageId(
+                        config["Email:DOMAIN"] ?? throw new InvalidOperationException("Email domain not configured.")
+                    ),
+                From = request.Email,
+                To = config["Email:SUPPORT_MAIL"] ?? throw new InvalidOperationException("Support email not configured."),
+                Subject = request.Subject,
+                TextBody = request.Message,
+                HtmlBody = request.Message,
+                Date = DateTimeOffset.UtcNow,
+                Seen = false,
+                ConversationID = conversation.ID,
             });
 
-            await emailService.SendNoReplyEmailAsync(
-                    config["Email:SUPPORT_MAIL"] ?? throw new InvalidOperationException("Contact form recipient email not configured."),
-                    $"New Contact Form Submission: {request.Subject}",
-                    body
-                );
+            await Db.SaveChangesAsync();
 
             var confirmationBody = emailService.LoadTemplate("ContactUsUser.html", new Dictionary<string, string>
             {

@@ -10,6 +10,10 @@ namespace NullzoneStudiosWebsite.Server.DataModels.Email
         public Guid ID { get; set; } = Guid.NewGuid();
         [Column("subject")]
         public string Subject { get; set; } = "";
+        [Column("sender_name")]
+        public string? SenderName { get; set; }
+        [Column("sender_email")]
+        public string? SenderEmail { get; set; }
         public DateTimeOffset LastMessageDate { get; set; }
         public ICollection<Email> Emails { get; set; } = [];
     }

@@ -1,12 +1,15 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import useConversations from '../../hooks/useConversations';
+import useConversation from '../../hooks/useConversation';
 import Throbber from '../Frontend/Throbber/Throbber';
 import LoadingError from '../Frontend/LoadingError/LoadingError';
 import Icon from '../Frontend/Icon/Icon';
 import './AdminMessages.css';
+import ConversationModal from '../Frontend/ConversationModal/ConversationModal';
 
 function AdminMessages() {
-    const { nextPage, prevPage, total, pageSize, page, setPage, refresh, loading, deleteConversation, conversations, conversation, fetch, unreads } = useConversations();
+    const { nextPage, prevPage, total, pageSize, page, setPage, refresh, loading, deleteConversation, conversations, unreads, markRead } = useConversations();
+    const conversationHook = useConversation();
     const totalPages = Math.ceil(total / pageSize);
 
     const getPageWindow = () => {
@@ -21,6 +24,7 @@ function AdminMessages() {
     };
 
     return (
+        <>
         <section className="admin-section" id="admin-messages">
             <div className="admin-section-header">
                 <h2>Support Conversations</h2>
@@ -30,7 +34,7 @@ function AdminMessages() {
                 </div>
             </div>
             <div className="admin-section-body">
-                {conversations.total === 0
+                {total === 0
                     ? <p style={{ opacity: 0.45 }}>No messages yet.</p>
                     : (
                         <>
@@ -56,8 +60,8 @@ function AdminMessages() {
                                             <td>{conversation.lastMessageDate}</td>
                                             <td>
                                                 <div className="actions">
-                                                    <button className='admin-btn admin-btn-ghost' onClick={() => fetch(conversation.id)}>Open Conversation</button>
-                                                    <button className='admin-btn admin-btn-ghost'>Mark as read</button>
+                                                    <button className='admin-btn admin-btn-ghost' onClick={() => conversationHook.fetch(conversation.id)}>Open Conversation</button>
+                                                    <button className='admin-btn admin-btn-ghost' onClick={() => markRead(conversation.id)}>Mark as read</button>
                                                     <button className='admin-btn admin-btn-danger' onClick={() => deleteConversation(conversation.id)}>Delete</button>
                                                 </div>
                                             </td>
@@ -100,6 +104,9 @@ function AdminMessages() {
                 }
             </div>
         </section>
+
+        <ConversationModal hook={conversationHook} supportEmail={"support@nullzonestudios.com"} />
+        </>
     );
 }
 
