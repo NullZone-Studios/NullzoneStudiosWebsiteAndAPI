@@ -82,12 +82,22 @@
     padding: .5em;
 }
 
+.conversation-info .linked-customer {
+    display: flex;
+    gap: .1em;
+}
+
 .modal-header .conversation-info h3 {
     text-transform: capitalize;
 }
 .modal-header .conversation-info span {
     text-transform: uppercase;
     opacity: .6;
+}
+
+.modal-header .conversation-info span span::before {
+    content: "-";
+    margin: 0em .2em;
 }
 
 .modal-body {
@@ -164,6 +174,14 @@
 
 .email-bubble-wrapper.sent .email-bubble {
     float: right;
+}
+
+.email-bubble-wrapper .email-bubble .email-bubble-iframe {
+    width: 100%;
+    border: none;
+    background: white;
+    height: 500px;
+    border-radius: .5em;
 }
 
 .email-bubble .email-bubble-info {

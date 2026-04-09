@@ -7,6 +7,10 @@ using NullzoneStudiosWebsite.Server.DataModels;
 using NullzoneStudiosWebsite.Server.DataModels.Email;
 using Microsoft.EntityFrameworkCore;
 using MimeKit.Utils;
+using System.Text.RegularExpressions;
+using HtmlAgilityPack;
+using System.Text;
+using NullzoneStudiosWebsite.Server.Tools;
 
 namespace NullzoneStudiosWebsite.Server.Services
 {
@@ -63,7 +67,7 @@ namespace NullzoneStudiosWebsite.Server.Services
                     To = message.To.ToString(),
                     From = message.From.ToString(),
                     Subject = message.Subject ?? "",
-                    TextBody = message.TextBody,
+                    TextBody = message.TextBody ?? HtmlBodyParser.Parse(message.HtmlBody).Trim(),
                     HtmlBody = message.HtmlBody,
                     Date = message.Date,
                     Seen = seen,
@@ -79,21 +83,27 @@ namespace NullzoneStudiosWebsite.Server.Services
         }
 
         public record EmailCredentials(string mail, string password);
-        public async Task<string> SendEmailFromAsync(string toEmail, string subject, string htmlBody, EmailCredentials credentials, string? inReplyTo = null)
+        public async Task<string> SendEmailFromAsync(string toEmail, string subject, string htmlBody, EmailCredentials credentials, string? inReplyTo = null, string? name = null)
         {
             var messageID = MimeUtils.GenerateMessageId(config["Email:DOMAIN"] ?? throw new InvalidOperationException("Email domain not configured."));
+            var senderAddress = MailboxAddress.Parse(credentials.mail);
+            senderAddress.Name = name ?? credentials.mail.Substring(0, credentials.mail.IndexOf('@') + 1).Replace('-', ' ').ToUpperInvariant();
+            var nonHtmlBody = HtmlBodyParser.Parse(htmlBody);
+
 
             var message = new MimeMessage();
+            var body = new Multipart("alternative")
+            {
+                new TextPart("plain"){ Text = nonHtmlBody },
+                new TextPart("html"){ Text = htmlBody },
+            };
             message.MessageId = messageID;
-            message.From.Add(MailboxAddress.Parse(credentials.mail));
+            message.From.Add(senderAddress);
             message.To.Add(MailboxAddress.Parse(toEmail));
             if (inReplyTo is not null) 
                 message.Headers.Add(new Header(HeaderId.InReplyTo, inReplyTo));
             message.Subject = subject;
-            message.Body = new TextPart("html")
-            {
-                Text = htmlBody
-            };
+            message.Body = body;
 
             using SmtpClient smtp = new SmtpClient();
             await smtp.ConnectAsync(
@@ -118,7 +128,7 @@ namespace NullzoneStudiosWebsite.Server.Services
                     config["Email:USERNAME"] ?? throw new InvalidOperationException("Email USERNAME not configured."),
                     config["Email:PASSWORD"] ?? throw new InvalidOperationException("Email PASSWORD not configured.")
                 );
-            await SendEmailFromAsync(toEmail, subject, htmlBody, credentials);
+            await SendEmailFromAsync(toEmail, subject, htmlBody, credentials, name: "No Reply");
         }
 
         public async Task DeleteMessagesAsync(IEnumerable<string> emailIDs)
@@ -174,6 +184,7 @@ namespace NullzoneStudiosWebsite.Server.Services
         private async Task<Conversation> ResolveConversation(DataContext db, MimeMessage message)
         {
             var replyID = message.InReplyTo;
+            var senderMailbox = message.From.Mailboxes.FirstOrDefault();
 
             if (string.IsNullOrEmpty(replyID) && message.References.Count > 0)
                 replyID = message.References.LastOrDefault();
@@ -197,7 +208,9 @@ namespace NullzoneStudiosWebsite.Server.Services
             var newConvo = new Conversation
             {
                 Subject = normalizedSubject,
-                LastMessageDate = message.Date
+                LastMessageDate = message.Date,
+                SenderEmail = senderMailbox?.Address ?? null,
+                SenderName = senderMailbox?.Name ?? null
             };
 
             db.Conversations.Add(newConvo);

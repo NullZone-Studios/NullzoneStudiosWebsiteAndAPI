@@ -5,6 +5,7 @@
     border: none;
     width: 2em;
     transition: transform .2s ease-out;
+    font-size: 1em;
 }
 
 .conversations-refresh-button:hover {

@@ -2,101 +2,88 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style>
-        .container {
-            font-family: sans-serif;
-            background: #0f0f0fff;
-            color: aliceblue;
-            padding: 1em;
-            border: solid #5151c7 1px;
-            border-radius: 15px;
-        }
-
-            .container * {
-                padding: 0;
-                margin: 0;
-            }
-
-            .container .card-body {
-                display: flex;
-                flex-direction: column;
-                justify-content: start;
-            }
-
-            .container .header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                height: 10vh;
-            }
-
-                .container .header div {
-                    line-height: 2em;
-                }
-
-                .container .header img {
-                    height: 100%;
-                }
-
-            .container hr {
-                background: linear-gradient(90deg, #00000000 0%, #ffffffa0 50%, #00000000 100%);
-                height: 2px;
-                border: none;
-                margin: 1em 0em;
-            }
-
-            .container .info {
-                line-height: 1.5em;
-            }
-
-                .container .info p {
-                    margin: 1em 0em;
-                }
-
-            .container .button {
-                color: aliceblue;
-                text-decoration: none;
-                padding: 1em;
-                margin: 1em 0em;
-                background: linear-gradient(90deg, #2727c9 0%, #9f6f10 100%);
-                border-radius: 10px;
-                width: fit-content;
-            }
-
-            .container .sent-by {
-                text-align: center;
-            }
-
-            .container .sent-by img {
-                width: 50%;
-            }
-
-            .employee-regards {
-                font-size: 1.1em;
-            }
-    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="card">
-            <div class="card-body">
-                <div class="header">
-                    <div>
-                        <h1>SUPPORT</h1>
-                    </div>
-                    <img src="https://lh3.googleusercontent.com/pw/AP1GczOeC5Bhahd71egRg4EFwFKTmD1OLxsY4KyM5s3ARcAVyGRtM_v2DGQnFbFH7gSiK9Q6R4rYK35a0nuqZoTVTbtcyzOphB6pKttnonNCU2sfuyvTA5cuaSfCDctH-MWgmFBCETcWim4hfK8Rk9ngPIA=w512-h512-s-no" alt="">
-                </div>
-                <hr>
-                <div class="info">
-                    <p>{{MESSAGE}}</p>
-                </div>
-                <p class="employee-regards"><b>Sincerely,<br/>{{EMPLOYEE_NAME}}</b></p>
-                <hr class="mt-2">
-                <div class="sent-by">
-                    This email was sent by<br /><a href="https://nullzonestudios.com/"><img src="https://lh3.googleusercontent.com/pw/AP1GczMWyj4CYpm-4zZwctDcjor90l2Sx4KlxRnBEmUkNY999SSYWbYC6TdeVxGJbB30lQ6ogR2jp0WeBVu4iIHG7pMUZIv7y3bwBE3NWXldPntJ9XrRlR9otBEc-wSiSPAmNUVETjaSN6yUuHY9R9Qo2mg=w1243-h285-s-no" alt="NullZone Studios"></a>
-                </div>
-            </div>
-        </div>
-    </div>
+<body style="margin: 0; padding: 0; background: #0a0a0a;">
+
+    <!-- Outer wrapper -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: #0a0a0a;">
+        <tr>
+            <td align="center" style="padding: 20px;">
+
+                <!-- Main container -->
+                <table width="600" cellpadding="0" cellspacing="0" border="0"
+                       style="background: #0f0f0f; border: 1px solid #5151c7; border-radius: 15px; font-family: sans-serif; color: #f0f8ff;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 20px 24px 0 24px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td valign="middle">
+                                        <h1 style="margin: 0; color: #f0f8ff; font-size: 1.4em;">SUPPORT</h1>
+                                    </td>
+                                    <td align="right" valign="middle">
+                                        <img src="https://lh3.googleusercontent.com/pw/AP1GczOeC5Bhahd71egRg4EFwFKTmD1OLxsY4KyM5s3ARcAVyGRtM_v2DGQnFbFH7gSiK9Q6R4rYK35a0nuqZoTVTbtcyzOphB6pKttnonNCU2sfuyvTA5cuaSfCDctH-MWgmFBCETcWim4hfK8Rk9ngPIA=w512-h512-s-no"
+                                             alt="NullZone Studios" width="60" height="60"
+                                             style="display: block;" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Divider -->
+                    <tr>
+                        <td style="padding: 16px 24px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="background: linear-gradient(90deg, #00000000 0%, #ffffffa0 50%, #00000000 100%); height: 2px; font-size: 0; line-height: 0;">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Message body -->
+                    <tr>
+                        <td style="padding: 0 24px 16px 24px; color: #f0f8ff; font-size: 1em; line-height: 1.6em;">
+                            <p style="margin: 0;">{{MESSAGE}}</p>
+                        </td>
+                    </tr>
+
+                    <!-- Regards -->
+                    <tr>
+                        <td style="padding: 0 24px 16px 24px; color: #f0f8ff; font-size: 1.1em;">
+                            <b>Sincerely,<br />{{EMPLOYEE_NAME}}</b>
+                        </td>
+                    </tr>
+
+                    <!-- Divider -->
+                    <tr>
+                        <td style="padding: 0 24px 16px 24px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="background: linear-gradient(90deg, #00000000 0%, #ffffffa0 50%, #00000000 100%); height: 2px; font-size: 0; line-height: 0;">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center" style="padding: 0 24px 24px 24px; color: #f0f8ff; font-size: 0.85em; opacity: 0.7;">
+                            This email was sent by<br />
+                            <a href="https://nullzonestudios.com/" style="display: inline-block; margin-top: 8px;">
+                                <img src="https://lh3.googleusercontent.com/pw/AP1GczMWyj4CYpm-4zZwctDcjor90l2Sx4KlxRnBEmUkNY999SSYWbYC6TdeVxGJbB30lQ6ogR2jp0WeBVu4iIHG7pMUZIv7y3bwBE3NWXldPntJ9XrRlR9otBEc-wSiSPAmNUVETjaSN6yUuHY9R9Qo2mg=w1243-h285-s-no"
+                                     alt="NullZone Studios" width="200"
+                                     style="display: block;" />
+                            </a>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
 </body>
 </html>

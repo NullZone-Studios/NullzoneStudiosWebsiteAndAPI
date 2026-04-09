@@ -168,7 +168,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
         [HttpGet("conversations/{conversationID}/{messageID}")]
         public async Task<IActionResult> GetEmailHtml(Guid conversationID, Guid messageID)
         {
-            if (!await IsAdminAsync()) return Forbid();
+            if (!await IsAdminAsync()) return Forbid("Request forbidden.");
 
             var email = await Db.Emails
                 .Where(e => e.ConversationID == conversationID && e.ID == messageID)
@@ -183,10 +183,9 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                     Date = e.Date.ToString("dd/MM/yyyy H:mm"),
                     e.Seen
                 })
-                .Select(e => e.HtmlBody)
                 .FirstOrDefaultAsync();
 
-            if (email is null) return NotFound();
+            if (email is null) return NotFound(new { message = "Could not be found." });
             return Ok(email);
         }
 
@@ -222,7 +221,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                 ? original.Subject
                 : "Re: " + original.Subject;
 
-            var htmlBody = emailService.LoadTemplate("Message.htm", new Dictionary<string, string>()
+            var htmlBody = emailService.LoadTemplate("Message.html", new Dictionary<string, string>()
             {
                 { "MESSAGE", request.body },
                 { "EMPLOYEE_NAME", employee.Name }
@@ -230,6 +229,7 @@ namespace NullzoneStudiosWebsite.Server.Controllers
 
             var sentEmail = new Email
             {
+                MessageID = Guid.NewGuid().ToString(),
                 InReplyTo = original.MessageID,
                 From = config["Email:SUPPORT_MAIL"] ?? throw new InvalidOperationException("Email SUPPORT_MAIL is not configured"),
                 To = toEmail,
@@ -252,7 +252,8 @@ namespace NullzoneStudiosWebsite.Server.Controllers
                     new EmailCredentials(
                             config["Email:SUPPORT_MAIL"] ?? throw new InvalidOperationException("Email SUPPORT_MAIL is not configured."),
                             config["Email:SUPPORT_PASSWORD"] ?? throw new InvalidOperationException("Email SUPPORT PASSWORD is not configured.")),
-                    original.MessageID
+                    original.MessageID,
+                    name: $"NullZone Studios: {employee.Name}"
                 );
             sentEmail.MessageID = sentMessageID;
             await Db.SaveChangesAsync();
