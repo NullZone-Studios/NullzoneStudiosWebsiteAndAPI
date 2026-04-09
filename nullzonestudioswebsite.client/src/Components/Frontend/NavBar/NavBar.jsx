@@ -7,6 +7,7 @@ class NavBar extends React.Component {
         this.state = {
             activePage: "",
             tinted: false,
+            open: false,
         };
         this.handleScroll = this.handleScroll.bind(this);
         this.observer = null;
@@ -50,7 +51,7 @@ class NavBar extends React.Component {
 
     render(){
         return (
-            <header className={`${this.state.tinted ? "tinted" : ""}`}>
+            <header className={`${this.state.tinted ? "tinted" : ""} ${this.state.open ? "open" : ""}`}>
                 <div>
                     <a href="#" id="logo"><img src={this.props.logo} alt="Logo" /></a>
                 </div>
@@ -69,6 +70,13 @@ class NavBar extends React.Component {
                         }
                     </ul>
                 </nav>
+                <button className="header-menu-button">
+                    <svg stroke="var(--button-color)" stroke-width="1em" fill="none" className="hamburger">
+                        <path stroke-linecap="round" stroke-linejoin="round">
+
+                        </path>
+                    </svg>
+                </button>
             </header>
         );
     }

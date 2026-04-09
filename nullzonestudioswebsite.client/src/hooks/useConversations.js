@@ -45,7 +45,11 @@ const useConversations = () => {
         }, [page, pageSize]);
 
     useEffect(() => {
+        const interval = setInterval(() => {
+            fetchConversations();
+        }, 2 * 60 * 1000);
         fetchConversations();
+        return () => clearInterval(interval);
     }, [fetchConversations]);
 
     const nextPage = useCallback(() => {
@@ -85,7 +89,7 @@ const useConversations = () => {
         } catch (err) {
             showToast(err instanceof TypeError ? "Unable to reach server." : err.message ?? "Invalid response from server.");
         }
-    });
+    }, [fetchConversations]);
 
     return { 
         conversations, total, loading, loadingError,

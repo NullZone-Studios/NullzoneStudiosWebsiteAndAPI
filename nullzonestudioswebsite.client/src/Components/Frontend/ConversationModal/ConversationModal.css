@@ -155,6 +155,7 @@
     padding: .5em;
     width: 50%;
     overflow: hidden;
+    transition: all .2s ease-out;
 }
 
 .email-bubble-wrapper .email-bubble .email-bubble-preview {
@@ -174,6 +175,10 @@
 
 .email-bubble-wrapper.sent .email-bubble {
     float: right;
+}
+
+.email-bubble.expanded {
+    width: 80%;
 }
 
 .email-bubble-wrapper .email-bubble .email-bubble-iframe {

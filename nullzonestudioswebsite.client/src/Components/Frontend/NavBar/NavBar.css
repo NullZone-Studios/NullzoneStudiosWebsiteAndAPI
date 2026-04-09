@@ -84,7 +84,7 @@ nav a:hover {
 }
 
 nav .active {
-    font-size: 1rem;
+    font-size: 1em;
 }
 
 nav a:hover li::after {
@@ -105,4 +105,55 @@ nav a li .profile-icon{
 
 nav .active li::after {
     width: 100%;
+}
+
+@media screen and (max-width: 600px) {
+
+    header {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        background: #000000a0;
+        backdrop-filter: blur(5px);
+        width: 70%;
+        transform: translateX(0%);
+        flex-direction: column;
+        gap: 10em;
+        justify-content: start;
+    }
+
+    header.tinted {
+        height: 100%;
+    }
+
+    header > div:first-child{
+        height: auto;
+        padding: 1em;
+    }
+
+    header #logo {
+        height: auto;
+        width: 20%;
+    }
+
+    header #logo img {
+        height: auto;
+        width: 100%;
+    }
+
+    header nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    header nav ul {
+        width: auto;
+        flex-direction: column;
+        justify-content: center;
+        align-items: start;
+        font-size: 2vh;
+    }
+
 }

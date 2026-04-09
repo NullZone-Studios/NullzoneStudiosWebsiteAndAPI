@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import client from "../api/client";
 import { showToast } from "../Components/toast";
 
@@ -91,6 +91,16 @@ const useConversation = () => {
         setHasMore(false);
         pageRef.current = 0;
     }, []);
+
+    useEffect(() => {
+        if (!conversation) return;
+
+        const interval = setInterval(() => {
+            fetch(conversation.id);
+        }, 2 * 60 * 1000);
+
+        return () => clearInterval(interval);
+    }, [conversation, fetch]);
 
     return {
         conversation, emails, loading, loadingMore,
