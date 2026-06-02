@@ -107,6 +107,10 @@ nav .active li::after {
     width: 100%;
 }
 
+.header-menu-button {
+    display: none;
+}
+
 @media screen and (max-width: 600px) {
 
     header {
@@ -117,7 +121,7 @@ nav .active li::after {
         background: #000000a0;
         backdrop-filter: blur(5px);
         width: 70%;
-        transform: translateX(0%);
+        transform: translateX(100%);
         flex-direction: column;
         gap: 10em;
         justify-content: start;
@@ -125,6 +129,10 @@ nav .active li::after {
 
     header.tinted {
         height: 100%;
+    }
+
+    header.open {
+        transform: translateX(0%);
     }
 
     header > div:first-child{
@@ -154,6 +162,41 @@ nav .active li::after {
         justify-content: center;
         align-items: start;
         font-size: 2vh;
+    }
+
+    .header-menu-button {
+        --button-color: var(--text-color);
+        display: block;
+        position: fixed;
+        background: none;
+        border: solid 2px var(--text-color);
+        border-radius: 10px;
+        top: 1em;
+        right: 1em;
+        width: 5em;
+        height: 5em;
+        z-index: 1001;
+    }
+
+    .header-menu-button svg {
+        transition: 1s;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .header-menu-button.open svg {
+        rotate: 45deg;
+    }
+
+    .header-menu-button .line {
+        transition: 1s;
+        stroke-dasharray: 60 47 60 46 60 1000;
+    }
+
+    .header-menu-button.open .line {
+        stroke-dashoffset: -106;
+        stroke-dasharray: 60 138 60 1000;
     }
 
 }
