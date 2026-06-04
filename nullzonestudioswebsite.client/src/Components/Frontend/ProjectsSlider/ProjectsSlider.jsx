@@ -11,13 +11,21 @@ class ProjectSlider extends React.Component {
         }
     }
 
-    prev = () => {
+    prev = (e) => {
+        e.preventDefault();
+        if (this._navigating) return;
+        this._navigating = true;
+        setTimeout(() => {this._navigating = false;}, 300);
         const { currentIndex } = this.state;
         const count = React.Children.count(this.props.children);
         this.setState({ currentIndex: (currentIndex - 1 + count) % count});
     }
     
-    next = () => {
+    next = (e) => {
+        e.preventDefault();
+        if (this._navigating) return;
+        this._navigating = true;
+        setTimeout(() => {this._navigating = false;}, 300);
         const { currentIndex } = this.state;
         const count = React.Children.count(this.props.children);
         this.setState({ currentIndex: (currentIndex + 1) % count});
@@ -54,7 +62,10 @@ class ProjectSlider extends React.Component {
                         return React.cloneElement(child, {
                             key: i,
                             style: this.getCardStyle(offset, this.state.hoveredIndex === i),
-                            onMouseMove: () => this.setState({ hoveredIndex: i }),
+                            onMouseMove: () => {
+                                if (window.matchMedia('(pointer: coarse)').matches) return;
+                                this.setState({ hoveredIndex: i });
+                            },
                             onMouseLeave: () => this.setState({ hoveredIndex: null })
                         });
                     })

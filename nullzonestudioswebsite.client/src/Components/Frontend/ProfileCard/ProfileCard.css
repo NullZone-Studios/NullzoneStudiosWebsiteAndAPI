@@ -39,7 +39,7 @@
     mix-blend-mode: multiply;
 }
 
-.profile-card .front h3 {
+.profile-card .front .name {
     position: absolute;
     bottom: 1em;
     left: 1em;
@@ -51,12 +51,12 @@
     text-transform: capitalize;
 }
 
-.profile-card .front h3 small {
+.profile-card .front .name small {
     font-size: .6em;
     text-transform: capitalize;
 }
 
-.profile-card .back h3 {
+.profile-card .back .name {
     position: absolute;
     width: calc(100% - 2em);
     top: 0;
@@ -68,13 +68,35 @@
     justify-content: start;
 }
 
-.profile-card .back p {
+.profile-card .back .about {
     position: absolute;
     bottom: 0;
     padding: 1em;
+    font-size: medium;
+    max-height: 70%;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
-.profile-card .back h3 small {
+.profile-card .back .about h4 {
+    margin-bottom: .5em;
+}
+
+.profile-card .back .about p {
+    font-size: .8em;
+}
+
+.profile-card .back .about ul {
+    position: relative;
+    margin-left: 1em;
+}
+
+.profile-card .back .about ul li {
+    font-size: .8em;
+    list-style: disc;
+}
+
+.profile-card .back .name small {
     font-size: .6em;
 }
 
@@ -128,5 +150,12 @@
     }
     to {
         --angle: 360deg
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-card {
+        width: 100%;
+        margin: 2em 0;
     }
 }

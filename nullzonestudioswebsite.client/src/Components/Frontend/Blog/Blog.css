@@ -251,3 +251,41 @@
     font-weight: 600;
     min-width: 1ch;
 }
+
+@media (max-width: 600px) {
+    .blog {
+        min-height: 80%;
+    }
+
+    .blog-post {
+        max-width: none;
+        max-height: none;
+        width: 95vw;
+        height: 70vh;
+    }
+
+    .blog-post-actions {
+        font-size: 1em;
+        display: flex;
+        gap: 1em;
+        padding-bottom: 1em;
+    }
+
+    .blog-post-actions button {
+        min-height: 5vh;
+        min-width: 5vh;
+    }
+
+    .blog-post-actions i {
+        font-size: 1em;
+    }
+
+    .blog-post-author-details span{
+        font-size: .7em;
+    }
+
+    .blog-post-author img {
+        min-width: 3em;
+        min-height: 3em;
+    }
+}

@@ -1,4 +1,5 @@
 import React from "react";
+import {MarkdownBlock, MarkdownSpan, MarkdownElement} from "md-block";
 import './ProfileCard.css'
 import { rotationByMousePosition } from "../../../assets/helperFunctions";
 
@@ -65,7 +66,9 @@ class ProfileCard extends React.Component{
                 <div className="back">
                     <img src={this.props.img} alt="" loading="lazy" />
                     <h3 className="name">{this.props.name}<i className="bi bi-dot"></i><small>{this.props.jobTitle}</small></h3>
-                    <p>{this.props.about}</p>
+                    <div className="about">
+                        <md-block>{this.props.about}</md-block>
+                    </div>
                 </div>
                 <div className="front">
                     <img src={this.props.img} alt="" loading="lazy" />

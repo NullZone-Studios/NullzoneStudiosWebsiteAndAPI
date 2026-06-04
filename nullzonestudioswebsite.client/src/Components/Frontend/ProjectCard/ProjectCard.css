@@ -80,3 +80,14 @@
 .project-card .call-to-action button:active{
     transform: scale(1,1);
 }
+
+@media (max-width: 600px) {
+    .project-card {
+        height: 90%;
+        width: 90%;
+    }
+
+    .project-card:hover{
+        transform: scale();
+    }
+}

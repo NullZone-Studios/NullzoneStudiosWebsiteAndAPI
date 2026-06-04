@@ -313,3 +313,72 @@
     color: #764ba2;
     text-decoration: underline;
 }
+
+@media (max-width: 600px) {
+    .login-panel,
+    .signup-panel,
+    .forgot-password-panel,
+    .reset-password-panel {
+        font-size: 4em;
+    }
+
+    .login-panel .login-container h2 {
+        font-size: 2em;
+        margin-bottom: 2em;
+    }
+
+    .login-panel form div label,
+    .login-panel form div input{
+        font-size: 1em;
+    }
+
+    .login-panel .form-footer p{
+        font-size: 1em;
+    }
+
+    .signup-panel .signup-container h2 {
+        font-size: 2em;
+        margin-bottom: 2em;
+    }
+
+    .signup-panel form div label,
+    .signup-panel form div input{
+        font-size: 1em;
+    }
+
+    .signup-panel .form-footer p{
+        font-size: 1em;
+    }
+
+    .forgot-password-panel .forgot-password-container h2 {
+        font-size: 2em;
+        margin-bottom: 2em;
+    }
+
+    .forgot-password-panel form div label,
+    .forgot-password-panel form div input{
+        font-size: 1em;
+    }
+
+    .forgot-password-panel .form-footer p{
+        font-size: 1em;
+    }
+
+    .reset-password-panel .reset-password-container h2 {
+        font-size: 2em;
+        margin-bottom: 2em;
+    }
+
+    .reset-password-panel form div label,
+    .reset-password-panel form div input{
+        font-size: 1em;
+    }
+
+    .reset-password-panel .form-footer p{
+        font-size: 1em;
+    }
+
+    aside div .close-btn {
+        font-size: 3em;
+    }
+}
