@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { showToast } from '../toast';
 
 const initialProjects = [
     { id: 1, title: 'Itch.IO',                           content: 'We have an Itch.IO page where you can check our old prototypes.',                            href: 'https://nullzone-studios.itch.io',                                         bannerImg: '' },
@@ -33,7 +34,7 @@ function AdminProjects({ data = [] , callback = { updateProject: () => {}, addPr
 
     useEffect( () => {
                 if (Array.isArray(data)) {
-                    setProjects(data);
+                    setTimeout(() => setProjects(data), 1);
                 }
             }, [data]);
 
@@ -44,6 +45,7 @@ function AdminProjects({ data = [] , callback = { updateProject: () => {}, addPr
         } else {
             callback.addProject(form);
         }
+        showToast("Saved changes.", "success");
         cancel();
     };
 

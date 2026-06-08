@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace NullzoneStudiosWebsite.Server.DataModels
 {
@@ -16,9 +17,9 @@ namespace NullzoneStudiosWebsite.Server.DataModels
         public int PostID { get; set; }
         [Column("user_id")]
         public int UserID { get; set; }
-        [ForeignKey(nameof(PostID))]
+        [ForeignKey(nameof(PostID)), JsonIgnore]
         public BlogPost Post { get; set; } = null!;
-        [ForeignKey(nameof(UserID))]
+        [ForeignKey(nameof(UserID)), JsonIgnore]
         public User User { get; set; } = null!;
     }
 }

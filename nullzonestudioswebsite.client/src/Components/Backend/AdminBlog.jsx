@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { showToast } from '../toast';
 
 const initialPosts = [
     { id: 1, title: 'First Post',  content: 'This is the first post.',  author: 'Author A', postImage: '', createdAt: '2026-03-25T13:34:00' },
@@ -25,32 +26,6 @@ function AdminBlog({ data, editPostId, callback = {} }) {
     const [form,      setForm]      = useState(empty);
     const handledEditPostIdRef = useRef(null);
 
-    useEffect(() => {
-        if (Array.isArray(data)) {
-            setPosts(data);
-        }
-    }, [data]);
-
-    useEffect(() => {
-        if (!editPostId || handledEditPostIdRef.current === editPostId) {
-            return;
-        }
-
-        const matchedPost = posts.find(p => String(p.id) === String(editPostId));
-
-        if (!matchedPost) {
-            return;
-        }
-
-        openEdit(matchedPost);
-        handledEditPostIdRef.current = String(editPostId);
-
-        document.getElementById('admin-blog')?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-        });
-    }, [editPostId, posts]);
-
     const onChange  = e => setForm({ ...form, [e.target.name]: e.target.value });
     const openAdd   = () => { setEditingId(null); setForm(empty); setShowForm(true); };
     const openEdit  = p => {
@@ -72,6 +47,31 @@ function AdminBlog({ data, editPostId, callback = {} }) {
         setPosts(posts.filter(p => p.id !== id));
     };
 
+    useEffect(() => {
+        if (Array.isArray(data)) {
+            setTimeout(() => setPosts(data), 1);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (!editPostId || handledEditPostIdRef.current === editPostId) {
+            return;
+        }
+
+        const matchedPost = posts.find(p => String(p.id) === String(editPostId));
+
+        if (!matchedPost) {
+            return;
+        }
+
+        setTimeout(() => openEdit(matchedPost), 1);
+        handledEditPostIdRef.current = String(editPostId);
+
+        document.getElementById('admin-blog')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
+    }, [editPostId, posts]);
 
     const save = async () => {
         if (!form.Title.trim()) return;
@@ -117,6 +117,7 @@ function AdminBlog({ data, editPostId, callback = {} }) {
                 ]);
             }
         }
+        showToast("Saved changes.", "success");
         cancel();
     };
 

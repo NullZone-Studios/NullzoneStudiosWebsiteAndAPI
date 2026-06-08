@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace NullzoneStudiosWebsite.Server.DataModels
 {
@@ -18,7 +19,7 @@ namespace NullzoneStudiosWebsite.Server.DataModels
         public DateTime? UsedAt { get; set; }
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [ForeignKey(nameof(UserID))]
+        [ForeignKey(nameof(UserID)), JsonIgnore]
         public User User { get; set; } = null!;
 
         [NotMapped] public bool IsExpired => DateTime.UtcNow >= ExpiresAt;

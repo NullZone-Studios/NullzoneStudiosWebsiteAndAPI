@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { showToast } from '../toast';
 
 const initialTeam = [
     { id: 1, name: 'Philip',    jobTitle: 'Founder, Lead Developer',              about: '', img: '' },
@@ -24,7 +25,7 @@ function AdminAboutUs({
     
     useEffect( () => {
             if (Array.isArray(data)) {
-                setTeam(data);
+                setTimeout(() => setTeam(data), 1);
             }
         }, [data]);
 
@@ -66,6 +67,7 @@ function AdminAboutUs({
         }
 
         if (succeeded) {
+            showToast("Saved changes.", "success");
             cancel();
         }
     };

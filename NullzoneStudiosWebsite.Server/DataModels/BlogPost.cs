@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace NullzoneStudiosWebsite.Server.DataModels
 {
@@ -18,7 +19,7 @@ namespace NullzoneStudiosWebsite.Server.DataModels
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [Column("author_id")]
         public int AuthorID { get; set; }
-        [ForeignKey(nameof(AuthorID))]
+        [ForeignKey(nameof(AuthorID)), JsonIgnore]
         public User Author { get; set; } = null!;
 
         public ICollection<BlogComment> Comments { get; set; } = [];

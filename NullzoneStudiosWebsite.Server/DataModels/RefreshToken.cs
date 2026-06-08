@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace NullzoneStudiosWebsite.Server.DataModels
 {
@@ -21,7 +22,7 @@ namespace NullzoneStudiosWebsite.Server.DataModels
         [Column("revoked_at")]
         public DateTime? RevokedAt { get; set; }
 
-        [ForeignKey(nameof(UserID))]
+        [ForeignKey(nameof(UserID)), JsonIgnore]
         public User User { get; set; } = null!;
 
         [NotMapped] public bool IsRevoked => RevokedAt.HasValue;
