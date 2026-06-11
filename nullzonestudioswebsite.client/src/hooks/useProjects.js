@@ -9,7 +9,7 @@ const useProjects = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await client.get('/api/projects');
+                const response = await client.get('/api/projects/latest');
                 if (!response.ok) {
                     let message = 'Failed to fetch projects.';
                     try {

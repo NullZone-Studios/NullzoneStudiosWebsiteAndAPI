@@ -178,7 +178,7 @@ Alongside our roguelite prototypes, we also explore incremental and idle game me
                   title={project.title}
                   content={project.content}
                   href={project.href}
-                  bannerImg={project.bannerImageUrl}
+                  bannerImg={project.bannerImageUrl ?? project.bannerImg ?? ""}
                 />
               ))
               }

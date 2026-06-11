@@ -52,10 +52,10 @@ function BlogShowcase({
                     </div>
 
                     <h2 className="blog-showcase-title">{post.title}</h2>
-                    <p className="blog-showcase-content">{post.content}</p>
+                    <md-block className="blog-showcase-content">{post.content}</md-block>
 
-                    {post.postImage && (
-                        <img className="blog-showcase-image" src={post.postImage} alt={`Blog post ${post.id}`} />
+                    {post.postImageUrl && (
+                        <img className="blog-showcase-image" src={post.postImageUrl} alt={`Blog post ${post.id}`} />
                     )}
 
                     <div className="blog-showcase-actions">

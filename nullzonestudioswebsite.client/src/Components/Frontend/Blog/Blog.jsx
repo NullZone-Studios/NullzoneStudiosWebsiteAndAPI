@@ -462,9 +462,9 @@ class Blog extends React.Component {
                     </div>
                 </div>
                 <h2 id="title">{post.title}</h2>
-                <p>{post.content}</p>
-                {post.postImage && (
-                    <img className="blog-post-image" src={post.postImage} alt={`Blog post ${post.id}`} />
+                <md-block>{post.content}</md-block>
+                {post.postImageUrl && (
+                    <img className="blog-post-image" src={post.postImageUrl} alt={`Blog post ${post.id}`} />
                 )}
                 <div className="blog-post-actions">
                     <button

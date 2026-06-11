@@ -82,7 +82,7 @@ function AdminBlog({ data, editPostId, callback = {} }) {
                     ...p,
                     title: form.Title,
                     content: form.Content,
-                    postImage: form.PostImageUrl,
+                    postImageUrl: form.PostImageUrl,
                     ...(updatedPost ?? {}),
                 } : p));
             } else {
@@ -90,7 +90,7 @@ function AdminBlog({ data, editPostId, callback = {} }) {
                     ...p,
                     title: form.Title,
                     content: form.Content,
-                    postImage: form.PostImageUrl,
+                    postImageUrl: form.PostImageUrl,
                 } : p));
             }
         } else {

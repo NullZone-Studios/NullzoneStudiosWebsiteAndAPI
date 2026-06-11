@@ -9,7 +9,7 @@ const initialProjects = [
     { id: 5, title: 'Blog site',                         content: 'We are creating a blog where we will periodically post updates about our projects.',         href: '',                                                                         bannerImg: '' },
 ];
 
-const empty = { title: '', content: '', href: '', bannerImg: '' };
+const empty = { title: '', content: '', href: '', bannerImageUrl: '' };
 
 function AdminProjects({ data = [] , callback = { updateProject: () => {}, addProject: () => {}, deleteProject: () => {} } }) {
     const [projects,  setProjects]  = useState(Array.isArray(data) ? data : initialProjects);
@@ -25,7 +25,7 @@ function AdminProjects({ data = [] , callback = { updateProject: () => {}, addPr
             title: p.title ?? '',
             content: p.content ?? '',
             href: p.href ?? '',
-            bannerImg: p.bannerImg ?? p.bannerImageUrl ?? ''
+            bannerImageUrl: p.bannerImg ?? p.bannerImageUrl ?? ''
         });
         setShowForm(true);
     };
@@ -103,7 +103,7 @@ function AdminProjects({ data = [] , callback = { updateProject: () => {}, addPr
                         </div>
                         <div className="admin-form-group">
                             <label>Banner Image URL (optional)</label>
-                            <input type="url" name="bannerImg" value={form.bannerImg} onChange={onChange} placeholder="https://…" />
+                            <input type="url" name="bannerImageUrl" value={form.bannerImageUrl} onChange={onChange} placeholder="https://…" />
                         </div>
                         <div className="admin-form-group">
                             <label>Description</label>
