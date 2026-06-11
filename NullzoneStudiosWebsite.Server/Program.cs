@@ -26,7 +26,18 @@ namespace NullzoneStudiosWebsite.Server
             byte[] jwtKey = SHA256.HashData(Encoding.UTF8.GetBytes(
                 builder.Configuration["Jwt:KEY"]
                 ?? throw new InvalidOperationException("JWT key not configured.")));
-            
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.WithOrigins(builder.Configuration["App:BASE_URL"] ?? throw new InvalidOperationException("BASE_URL not configured."))
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

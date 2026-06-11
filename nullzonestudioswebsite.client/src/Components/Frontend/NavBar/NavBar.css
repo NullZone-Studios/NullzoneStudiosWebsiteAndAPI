@@ -59,11 +59,13 @@ nav a {
     transition: all .2s ease-out;
     height: 100%;
     padding: 0 1em;
+    min-width: 3rem;
 }
 
 nav a li {
     height: 100%;
     align-content: center;
+    width: max-content;
 }
 
 nav a li::after {

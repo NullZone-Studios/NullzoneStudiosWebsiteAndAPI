@@ -44,3 +44,10 @@
     line-height: 1.4;
     color: #ccc;
 }
+
+@media (max-width: 600px) {
+    .cookie-warning {
+      font-size: 4.5em;
+      width: 90vw;
+    }
+}

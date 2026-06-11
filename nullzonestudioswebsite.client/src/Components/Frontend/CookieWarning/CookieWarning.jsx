@@ -8,7 +8,7 @@ export default function CookiePopup() {
   useEffect(() => {
     const hasSeen = localStorage.getItem("cookieConsent");
     if (!hasSeen) {
-      setVisible(true);
+      setTimeout(() => setVisible(true), 1);
     }
   }, []);
 
@@ -43,9 +43,8 @@ export default function CookiePopup() {
             <p>
               The following data may be saved and stored locally on your device:
               <ul>
-                <li>- User tokens</li>
-                <li>- ALL your private data</li>
-                <li>- Garen feet pics</li>
+                <li>- Temporary login tokens</li>
+                <li>- Images</li>
               </ul>
             </p>
           </div>
