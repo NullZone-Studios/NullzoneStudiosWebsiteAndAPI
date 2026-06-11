@@ -288,4 +288,16 @@
         min-width: 3em;
         min-height: 3em;
     }
+
+    .blog-post-admin-actions{
+        top: 1em;
+        right: 1em;
+        gap: 1em;
+    }
+
+    .blog-post-admin-actions button {
+        font-size: 1em;
+        padding: 1em;
+    }
+
 }

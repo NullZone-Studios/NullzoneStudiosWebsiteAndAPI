@@ -322,3 +322,43 @@
 .profile-details strong {
     color: rgb(102, 126, 234);
 }
+
+@media (max-width: 600px){
+    .user-profile-panel {
+        max-height: 95vh;
+        height: 95%;
+        width: 95%;
+        font-size: 3em;
+    }
+    .profile-top-row{
+        margin: 1em 0em;
+    }
+    .profile-top-row h2{
+        font-size: 2em;
+        line-height: 1em;
+    }
+    .edit-profile-btn {
+        font-size: 1em;
+    }
+    .edit-profile-btn i {
+        font-size: 1em;
+    }
+
+    .profile-header{
+        margin: 1em 0em;
+        font-size: 1em;
+    }
+    .profile-header h1 {
+        font-size: 2.5em;
+    }
+    .profile-details {
+        font-size: 1.5em;
+    }
+    .profile-edit-actions {
+        gap: .5em;
+    }
+    .profile-edit-actions button {
+        padding: .5em 1em;
+        font-size: 1.2em;
+    }
+}
