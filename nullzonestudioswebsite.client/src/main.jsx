@@ -13,6 +13,7 @@ createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
+          <Route path="/reset-password" element={<App />} />
           <Route path="/admin" element={
             <ProtectedRoute requiredLevel={1}>
               <AdminPanel />
